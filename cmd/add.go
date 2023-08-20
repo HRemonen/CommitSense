@@ -1,3 +1,6 @@
+/*
+Copyright © 2023 NAME HERE <EMAIL ADDRESS>
+*/
 package cmd
 
 import (
@@ -15,9 +18,15 @@ type item struct {
 	IsSelected bool
 }
 
-var addInteractiveCmd = &cobra.Command{
-	Use:   "add-interactive",
+// addCmd represents the add command
+var addCmd = &cobra.Command{
+	Use:   "add",
 	Short: "Interactively select files to stage",
+	Long: `Select files that are not tracked or files that are modified and add the selected files to staging
+
+This command uses the native git add and git status commands under 
+the hood. Use this command to stage selected files before making a 
+commit.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		files, err := getChangedFiles()
 		if err != nil {
@@ -35,10 +44,13 @@ var addInteractiveCmd = &cobra.Command{
 
 func init() {
 	// Add the add-interactive subcommand to the root command
-	rootCmd.AddCommand(addInteractiveCmd)
+	rootCmd.AddCommand(addCmd)
 }
 
 func getChangedFiles() ([]*item, error) {
+	// Different git porcelain status codes for files
+	gitPrefixes := []string {"M", "A", "D", "??"}
+	
 	// Simulate getting the list of changed files from Git
 	cmd := exec.Command("git", "status", "--porcelain")
 	output, err := cmd.CombinedOutput()
@@ -52,7 +64,7 @@ func getChangedFiles() ([]*item, error) {
 		// Strip leading and trailing whitespace
 		line = strings.TrimSpace(line)
 
-		if strings.HasPrefix(line, "M") || strings.HasPrefix(line, "A") || strings.HasPrefix(line, "??") {
+		if containsPrefix(line, gitPrefixes) {			
 			// Extract the file path
 			parts := strings.Fields(line)
 			if len(parts) == 2 {
@@ -83,11 +95,9 @@ func promptForFiles(selectedPos int, allItems []*item) ([]*item, error) {
 
 	// Define promptui template
 	templates := &promptui.SelectTemplates{
-		Label: `{{if .IsSelected}}
-                    ✔
-                {{end}} {{ .ID | green }} - label`,
-		Active:   "→ {{if .IsSelected}}✔ {{end}}{{ .ID | cyan }}",
-		Inactive: "{{if .IsSelected}}✔ {{end}}{{ .ID | white }}",
+		Label:    "{{if .IsSelected}}✔ {{ .ID | green }} {{end}}",
+		Active:   "→ {{if .IsSelected}}✔ {{end}} {{ .ID | cyan }}",
+		Inactive: "{{if .IsSelected}}✔ {{end}} {{ .ID | white }}",
 	}
 
 	prompt := promptui.Select{
@@ -130,4 +140,13 @@ func stageFile(filename string) {
 	if err != nil {
 		fmt.Printf("Error staging file %s: %v\n", filename, err)
 	}
+}
+
+func containsPrefix(s string, prefixes []string) bool {
+    for _, prefix := range prefixes {
+        if strings.HasPrefix(s, prefix) {
+            return true
+        }
+    }
+    return false
 }
