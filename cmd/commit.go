@@ -60,20 +60,31 @@ func PromptForString(prompt CommitPrompt) (string, error) {
 
 // PromptForMultilineString prompts the user to enter a multiline string.
 func PromptForMultilineString(prompt CommitPrompt) (string, error) {
-	promptUI := promptui.Prompt{
-		Label: prompt.Label,
-		Validate: func(s string) error {
-			// Accept any input
-			return nil
-		},
+	var lines []string
+
+	for {
+		linePrompt := promptui.Prompt{
+			Label: prompt.Label,
+			Validate: func(s string) error {
+				// Accept any input
+				return nil
+			},
+		}
+
+		line, err := linePrompt.Run()
+		if err != nil {
+			break
+		}
+
+		// If the line is empty (just Enter), stop prompting
+		if line == "" {
+			break
+		}
+
+		lines = append(lines, line)
 	}
 
-	result, err := promptUI.Run()
-	if err != nil {
-		return "", err
-	}
-
-	return result, nil
+	return strings.Join(lines, "\n"), nil
 }
 
 // CommitCmd represents the commit command.
@@ -138,7 +149,6 @@ var commitCmd = &cobra.Command{
 
 		commitMessage := CreateCommitMessage(commitType, commitScope, commitDescription, commitBody, isBreakingChange, breakingChangeDescription)
 
-
 		if err := CreateGitCommit(commitMessage, stagedFiles); err != nil {
 			fmt.Println("Error creating commit:", err)
 			os.Exit(1)
@@ -174,7 +184,7 @@ func GetStagedFiles() ([]string, error) {
 }
 
 // CreateCommitMessage creates a commit message in the Conventional Commits format.
-func CreateCommitMessage(commitType, commitScope, commitDescription string, commitBody string, isBreakingChange bool, breakingChangeDescription string) string {	
+func CreateCommitMessage(commitType, commitScope, commitDescription string, commitBody string, isBreakingChange bool, breakingChangeDescription string) string {
 	commitMessage := commitType
 	if commitScope != "" {
 		commitMessage += "(" + commitScope + ")"
