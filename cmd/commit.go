@@ -78,7 +78,19 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		commitMessage := CreateCommitMessage(commitType, commitScope, commitDescription, isBreakingChange)
+		var breakingChangeDescription string
+		if isBreakingChange {
+			breakingChangeDescription, err = PromptForString(CommitPrompt{
+				Label: "Enter a description of the breaking change:",
+			})
+			if err != nil {
+				fmt.Println("Prompt failed:", err)
+				os.Exit(1)
+			}
+		}
+
+		commitMessage := CreateCommitMessage(commitType, commitScope, commitDescription, isBreakingChange, breakingChangeDescription)
+
 
 		if err := CreateGitCommit(commitMessage, stagedFiles); err != nil {
 			fmt.Println("Error creating commit:", err)
@@ -115,7 +127,7 @@ func GetStagedFiles() ([]string, error) {
 }
 
 // CreateCommitMessage creates a commit message in the Conventional Commits format.
-func CreateCommitMessage(commitType, commitScope, commitDescription string, isBreakingChange bool) string {
+func CreateCommitMessage(commitType, commitScope, commitDescription string, isBreakingChange bool, breakingChangeDescription string) string {
 	commitMessage := commitType
 	if commitScope != "" {
 		commitMessage += "(" + commitScope + ")"
@@ -123,7 +135,7 @@ func CreateCommitMessage(commitType, commitScope, commitDescription string, isBr
 	commitMessage += ": " + commitDescription
 
 	if isBreakingChange {
-		commitMessage += "\nBREAKING CHANGE: Describe the breaking change here."
+		commitMessage += "\nBREAKING CHANGE: " + breakingChangeDescription
 	}
 
 	return commitMessage
