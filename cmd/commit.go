@@ -208,7 +208,7 @@ func CreateCommitMessage(commitType, commitScope, commitDescription string, comm
 	}
 
 	if isBreakingChange {
-		commitMessage += "\nBREAKING CHANGE: " + breakingChangeDescription
+		commitMessage += "\n\nBREAKING CHANGE: " + breakingChangeDescription
 	}
 
 	return commitMessage
