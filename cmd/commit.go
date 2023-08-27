@@ -70,7 +70,15 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		commitMessage := CreateCommitMessage(commitType, commitScope, commitDescription)
+		isBreakingChange, err := PromptForBool(CommitPrompt{
+			Label: "Is this a breaking change?",
+		})
+		if err != nil {
+			fmt.Println("Prompt failed:", err)
+			os.Exit(1)
+		}
+
+		commitMessage := CreateCommitMessage(commitType, commitScope, commitDescription, isBreakingChange)
 
 		if err := CreateGitCommit(commitMessage, stagedFiles); err != nil {
 			fmt.Println("Error creating commit:", err)
@@ -107,12 +115,17 @@ func GetStagedFiles() ([]string, error) {
 }
 
 // CreateCommitMessage creates a commit message in the Conventional Commits format.
-func CreateCommitMessage(commitType, commitScope, commitDescription string) string {
+func CreateCommitMessage(commitType, commitScope, commitDescription string, isBreakingChange bool) string {
 	commitMessage := commitType
 	if commitScope != "" {
 		commitMessage += "(" + commitScope + ")"
 	}
 	commitMessage += ": " + commitDescription
+
+	if isBreakingChange {
+		commitMessage += "\nBREAKING CHANGE: Describe the breaking change here."
+	}
+
 	return commitMessage
 }
 
@@ -124,4 +137,25 @@ func CreateGitCommit(message string, files []string) error {
 	commitGitCmd.Stderr = os.Stderr
 
 	return commitGitCmd.Run()
+}
+
+// PromptForBool prompts the user to enter a boolean value.
+func PromptForBool(prompt CommitPrompt) (bool, error) {
+	promptUI := promptui.Prompt{
+		Label: prompt.Label,
+		Validate: func(s string) error {
+			if s == "Y" || s == "N" || s == "y" || s == "n" {
+				return nil
+			}
+			return fmt.Errorf("Please enter Y or N")
+		},
+		Default: prompt.Default,
+	}
+
+	result, err := promptUI.Run()
+	if err != nil {
+		return false, err
+	}
+
+	return result == "Y" || result == "y", nil
 }
