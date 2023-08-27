@@ -13,13 +13,6 @@ CommitSense is a command-line tool that simplifies Git version control by provid
 
 ## 🎩 Neckbeard Mode
 
-If you've got a neckbeard and you've been using the console since before the dinosaurs were alive, we've got you covered! You can totally go old school and add files for staging using the `git add <filename>` command. Then, when you're ready, come back and give CommitSense a spin to create those commits with style!
-
-Keep rocking that terminal like a boss! 💻
-
-
-## 🎩 Neckbeard Mode
-
 If you've got a neckbeard or you've been using the console since before the dinosaurs were alive, we've got you covered! You can totally go old school and add files for staging using the `git add <filename>` command. Some even say it's faster than an interactive CLI.
 
 Here's the cool part: CommitSense plays well with native Git commands under the hood. So, while you're using Git commands like a console wizard, CommitSense is right there, ensuring compatibility and helping you create those commits with style when you're ready!
