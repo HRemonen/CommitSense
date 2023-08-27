@@ -1,5 +1,5 @@
 /*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
+Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 */
 package cmd
 
@@ -18,7 +18,7 @@ type item struct {
 	IsSelected bool
 }
 
-// addCmd represents the add command
+// addCmd represents the add command used to stage files for commit
 var addCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Interactively select files to stage",
@@ -49,8 +49,8 @@ func init() {
 
 func getChangedFiles() ([]*item, error) {
 	// Different git porcelain status codes for files
-	gitPrefixes := []string {"M", "A", "D", "??"}
-	
+	gitPrefixes := []string{"M", "A", "D", "??"}
+
 	// Simulate getting the list of changed files from Git
 	cmd := exec.Command("git", "status", "--porcelain")
 	output, err := cmd.CombinedOutput()
@@ -64,7 +64,7 @@ func getChangedFiles() ([]*item, error) {
 		// Strip leading and trailing whitespace
 		line = strings.TrimSpace(line)
 
-		if containsPrefix(line, gitPrefixes) {			
+		if containsPrefix(line, gitPrefixes) {
 			// Extract the file path
 			parts := strings.Fields(line)
 			if len(parts) == 2 {
@@ -95,9 +95,9 @@ func promptForFiles(selectedPos int, allItems []*item) ([]*item, error) {
 
 	// Define promptui template
 	templates := &promptui.SelectTemplates{
-		Label:    "{{if .IsSelected}}✔ {{ .ID | green }} {{end}}",
+		Label:    "{{ . }}?",
 		Active:   "→ {{if .IsSelected}}✔ {{end}} {{ .ID | cyan }}",
-		Inactive: "{{if .IsSelected}}✔ {{end}} {{ .ID | white }}",
+		Inactive: "{{if .IsSelected }}✔ {{ .ID | green }} {{else}}{{ .ID | faint }}{{end}} ",
 	}
 
 	prompt := promptui.Select{
@@ -143,10 +143,10 @@ func stageFile(filename string) {
 }
 
 func containsPrefix(s string, prefixes []string) bool {
-    for _, prefix := range prefixes {
-        if strings.HasPrefix(s, prefix) {
-            return true
-        }
-    }
-    return false
+	for _, prefix := range prefixes {
+		if strings.HasPrefix(s, prefix) {
+			return true
+		}
+	}
+	return false
 }

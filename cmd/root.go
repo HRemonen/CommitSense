@@ -1,5 +1,5 @@
 /*
-Copyright © 2023 NAME HERE <henri@remonen.fi>
+Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 */
 package cmd
 
