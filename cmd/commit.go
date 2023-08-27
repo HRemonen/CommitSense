@@ -61,6 +61,7 @@ func PromptForString(prompt CommitPrompt) (string, error) {
 // PromptForMultilineString prompts the user to enter a multiline string.
 func PromptForMultilineString(prompt CommitPrompt) (string, error) {
 	var lines []string
+	isFirstLine := true
 
 	for {
 		linePrompt := promptui.Prompt{
@@ -69,6 +70,12 @@ func PromptForMultilineString(prompt CommitPrompt) (string, error) {
 				// Accept any input
 				return nil
 			},
+		}
+
+		if !isFirstLine {
+			linePrompt.Label = ""
+		} else {
+			isFirstLine = false
 		}
 
 		line, err := linePrompt.Run()
