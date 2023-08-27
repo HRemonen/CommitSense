@@ -27,6 +27,27 @@ func SelectCommitType() (string, error) {
 	return typeResult, err
 }
 
+// PromptForBool prompts the user to enter a boolean value.
+func PromptForBool(prompt CommitPrompt) (bool, error) {
+	promptUI := promptui.Prompt{
+		Label: prompt.Label,
+		Validate: func(s string) error {
+			if s == "Y" || s == "N" || s == "y" || s == "n" {
+				return nil
+			}
+			return fmt.Errorf("Please enter Y or N")
+		},
+		Default: prompt.Default,
+	}
+
+	result, err := promptUI.Run()
+	if err != nil {
+		return false, err
+	}
+
+	return result == "Y" || result == "y", nil
+}
+
 // PromptForString prompts the user to enter a string.
 func PromptForString(prompt CommitPrompt) (string, error) {
 	promptUI := promptui.Prompt{
@@ -35,6 +56,24 @@ func PromptForString(prompt CommitPrompt) (string, error) {
 		Default:  prompt.Default,
 	}
 	return promptUI.Run()
+}
+
+// PromptForMultilineString prompts the user to enter a multiline string.
+func PromptForMultilineString(prompt CommitPrompt) (string, error) {
+	promptUI := promptui.Prompt{
+		Label: prompt.Label,
+		Validate: func(s string) error {
+			// Accept any input
+			return nil
+		},
+	}
+
+	result, err := promptUI.Run()
+	if err != nil {
+		return "", err
+	}
+
+	return result, nil
 }
 
 // CommitCmd represents the commit command.
@@ -70,6 +109,14 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		commitBody, err := PromptForMultilineString(CommitPrompt{
+			Label: "Enter a detailed commit body (press Enter twice to finish)",
+		})
+		if err != nil {
+			fmt.Println("Prompt failed:", err)
+			os.Exit(1)
+		}
+
 		isBreakingChange, err := PromptForBool(CommitPrompt{
 			Label: "Is this a breaking change?",
 		})
@@ -89,7 +136,7 @@ var commitCmd = &cobra.Command{
 			}
 		}
 
-		commitMessage := CreateCommitMessage(commitType, commitScope, commitDescription, isBreakingChange, breakingChangeDescription)
+		commitMessage := CreateCommitMessage(commitType, commitScope, commitDescription, commitBody, isBreakingChange, breakingChangeDescription)
 
 
 		if err := CreateGitCommit(commitMessage, stagedFiles); err != nil {
@@ -127,7 +174,7 @@ func GetStagedFiles() ([]string, error) {
 }
 
 // CreateCommitMessage creates a commit message in the Conventional Commits format.
-func CreateCommitMessage(commitType, commitScope, commitDescription string, isBreakingChange bool, breakingChangeDescription string) string {	
+func CreateCommitMessage(commitType, commitScope, commitDescription string, commitBody string, isBreakingChange bool, breakingChangeDescription string) string {	
 	commitMessage := commitType
 	if commitScope != "" {
 		commitMessage += "(" + commitScope + ")"
@@ -138,6 +185,10 @@ func CreateCommitMessage(commitType, commitScope, commitDescription string, isBr
 	}
 
 	commitMessage += ": " + commitDescription
+
+	if commitBody != "" {
+		commitMessage += "\n\n" + commitBody
+	}
 
 	if isBreakingChange {
 		commitMessage += "\nBREAKING CHANGE: " + breakingChangeDescription
@@ -154,25 +205,4 @@ func CreateGitCommit(message string, files []string) error {
 	commitGitCmd.Stderr = os.Stderr
 
 	return commitGitCmd.Run()
-}
-
-// PromptForBool prompts the user to enter a boolean value.
-func PromptForBool(prompt CommitPrompt) (bool, error) {
-	promptUI := promptui.Prompt{
-		Label: prompt.Label,
-		Validate: func(s string) error {
-			if s == "Y" || s == "N" || s == "y" || s == "n" {
-				return nil
-			}
-			return fmt.Errorf("Please enter Y or N")
-		},
-		Default: prompt.Default,
-	}
-
-	result, err := promptUI.Run()
-	if err != nil {
-		return false, err
-	}
-
-	return result == "Y" || result == "y", nil
 }
