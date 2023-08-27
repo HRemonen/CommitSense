@@ -55,7 +55,7 @@ var commitCmd = &cobra.Command{
 		}
 
 		commitScope, err := PromptForString(CommitPrompt{
-			Label: "Enter a commit scope (optional):",
+			Label: "Enter a commit scope (optional)",
 		})
 		if err != nil {
 			fmt.Println("Prompt failed:", err)
@@ -63,7 +63,7 @@ var commitCmd = &cobra.Command{
 		}
 
 		commitDescription, err := PromptForString(CommitPrompt{
-			Label: "Enter a brief commit description:",
+			Label: "Enter a brief commit description",
 		})
 		if err != nil {
 			fmt.Println("Prompt failed:", err)
@@ -81,7 +81,7 @@ var commitCmd = &cobra.Command{
 		var breakingChangeDescription string
 		if isBreakingChange {
 			breakingChangeDescription, err = PromptForString(CommitPrompt{
-				Label: "Enter a description of the breaking change:",
+				Label: "Enter a description of the breaking change",
 			})
 			if err != nil {
 				fmt.Println("Prompt failed:", err)
@@ -127,11 +127,16 @@ func GetStagedFiles() ([]string, error) {
 }
 
 // CreateCommitMessage creates a commit message in the Conventional Commits format.
-func CreateCommitMessage(commitType, commitScope, commitDescription string, isBreakingChange bool, breakingChangeDescription string) string {
+func CreateCommitMessage(commitType, commitScope, commitDescription string, isBreakingChange bool, breakingChangeDescription string) string {	
 	commitMessage := commitType
 	if commitScope != "" {
 		commitMessage += "(" + commitScope + ")"
 	}
+
+	if isBreakingChange {
+		commitMessage += "!"
+	}
+
 	commitMessage += ": " + commitDescription
 
 	if isBreakingChange {
