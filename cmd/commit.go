@@ -31,12 +31,7 @@ func SelectCommitType() (string, error) {
 func PromptForBool(prompt CommitPrompt) (bool, error) {
 	promptUI := promptui.Prompt{
 		Label: prompt.Label,
-		Validate: func(s string) error {
-			if s == "Y" || s == "N" || s == "y" || s == "n" {
-				return nil
-			}
-			return fmt.Errorf("Please enter Y or N")
-		},
+		Validate: prompt.Validate,
 		Default: prompt.Default,
 	}
 
@@ -143,6 +138,12 @@ var commitCmd = &cobra.Command{
 
 		isBreakingChange, err := PromptForBool(CommitPrompt{
 			Label: "Is this a breaking change?",
+			Validate: func(s string) error {
+				if s == "Y" || s == "N" || s == "y" || s == "n" {
+					return nil
+				}
+				return fmt.Errorf("Please enter Y or N")
+			},
 		})
 		if err != nil {
 			fmt.Println("Prompt failed:", err)
