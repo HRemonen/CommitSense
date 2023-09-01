@@ -30,9 +30,9 @@ func SelectCommitType() (string, error) {
 // PromptForBool prompts the user to enter a boolean value.
 func PromptForBool(prompt CommitPrompt) (bool, error) {
 	promptUI := promptui.Prompt{
-		Label: prompt.Label,
+		Label:    prompt.Label,
 		Validate: prompt.Validate,
-		Default: prompt.Default,
+		Default:  prompt.Default,
 	}
 
 	result, err := promptUI.Run()
@@ -53,33 +53,12 @@ func PromptForString(prompt CommitPrompt) (string, error) {
 	return promptUI.Run()
 }
 
-// PromptForMultilineString prompts the user to enter a multiline string.
 func PromptForMultilineString(prompt CommitPrompt) (string, error) {
 	var lines []string
-	isFirstLine := true
 
 	for {
-		linePrompt := promptui.Prompt{
-			Label: prompt.Label,
-			Validate: func(s string) error {
-				// Accept any input
-				return nil
-			},
-		}
-
-		if !isFirstLine {
-			linePrompt.Label = ""
-		} else {
-			isFirstLine = false
-		}
-
-		line, err := linePrompt.Run()
-		if err != nil {
-			break
-		}
-
-		// If the line is empty (just Enter), stop prompting
-		if line == "" {
+		line, err := PromptForString(prompt)
+		if err != nil || line == "" {
 			break
 		}
 
@@ -130,6 +109,10 @@ var commitCmd = &cobra.Command{
 
 		commitBody, err := PromptForMultilineString(CommitPrompt{
 			Label: "Enter a detailed commit body (press Enter twice to finish)",
+			Validate: func(s string) error {
+				// Accept any input
+				return nil
+			},
 		})
 		if err != nil {
 			fmt.Println("Prompt failed:", err)
