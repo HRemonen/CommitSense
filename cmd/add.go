@@ -4,6 +4,7 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package cmd
 
 import (
+	"commitsense/pkg/item"
 	"fmt"
 	"os"
 	"os/exec"
@@ -12,11 +13,6 @@ import (
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
-
-type item struct {
-	ID         string
-	IsSelected bool
-}
 
 // addCmd represents the add command used to stage files for commit
 var addCmd = &cobra.Command{
@@ -47,7 +43,7 @@ func init() {
 	rootCmd.AddCommand(addCmd)
 }
 
-func getChangedFiles() ([]*item, error) {
+func getChangedFiles() ([]*item.Item, error) {
 	// Different git porcelain status codes for files
 	gitPrefixes := []string{"M", "A", "D", "??"}
 
@@ -59,7 +55,7 @@ func getChangedFiles() ([]*item, error) {
 	}
 
 	lines := strings.Split(string(output), "\n")
-	var changedFiles []*item
+	var changedFiles []*item.Item
 	for _, line := range lines {
 		// Strip leading and trailing whitespace
 		line = strings.TrimSpace(line)
@@ -68,7 +64,7 @@ func getChangedFiles() ([]*item, error) {
 			// Extract the file path
 			parts := strings.Fields(line)
 			if len(parts) == 2 {
-				var items = []*item{
+				var items = []*item.Item{
 					{
 						ID: parts[1],
 					},
@@ -80,11 +76,11 @@ func getChangedFiles() ([]*item, error) {
 	return changedFiles, nil
 }
 
-func promptForFiles(selectedPos int, allItems []*item) ([]*item, error) {
+func promptForFiles(selectedPos int, allItems []*item.Item) ([]*item.Item, error) {
 	const continueItem = "Continue"
 
 	if len(allItems) > 0 && allItems[0].ID != continueItem {
-		var items = []*item{
+		var items = []*item.Item{
 			{
 				ID: continueItem,
 			},
@@ -124,7 +120,7 @@ func promptForFiles(selectedPos int, allItems []*item) ([]*item, error) {
 		return promptForFiles(selectionIdx, allItems)
 	}
 
-	var selectedItems []*item
+	var selectedItems []*item.Item
 	for _, i := range allItems {
 		if i.IsSelected {
 			selectedItems = append(selectedItems, i)
