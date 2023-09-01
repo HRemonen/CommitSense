@@ -121,6 +121,12 @@ var commitCmd = &cobra.Command{
 
 		commitDescription, err := PromptForString(CommitPrompt{
 			Label: "Enter a brief commit description",
+			Validate: func(s string) error {
+				if len(s) > 0 {
+					return nil
+				}
+				return fmt.Errorf("Please a commit description")
+			},
 		})
 		if err != nil {
 			fmt.Println("Prompt failed:", err)
