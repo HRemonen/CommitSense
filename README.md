@@ -17,6 +17,70 @@ Here's the cool part: CommitSense plays well with native Git commands under the 
 
 But, there's one thing to note: CommitSense doesn't support chunking files when adding. So, for those complex file-staging tasks, you might want to stick to the classic `git add` method.
 
+## Development
+
+## Linters and Code Formatting
+
+### golangci-lint
+
+[golangci-lint](https://golangci-lint.run/) is a fast and customizable Go linter. It provides a wide range of checks for various aspects of your Go code.
+
+To install golangci-lint, run the following command:
+
+```bash
+go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+```
+
+### Running golangci-lint
+
+To run golangci-lint on your project, navigate to your project's root directory and execute:
+
+```bash
+golangci-lint run
+```
+This command will analyze your Go code, check for issues, and display the results.
+
+To run and fix autofixable problems, run the following command:
+
+```bash
+golangci-lint run --fix
+```
+
+### goimports
+
+goimports is a tool that not only formats your code but also manages import statements.
+
+To install goimports, run the following command:
+
+```bash
+go get golang.org/x/tools/cmd/goimports
+```
+
+### Running goimports
+
+To format and organize your import statements, run:
+
+```bash
+goimports -w .
+```
+
+### gofumpt
+
+gofumpt is a stricter Go code formatter that follows the [gofumpt style](https://github.com/mvdan/gofumpt).
+
+To install gofumpt, run:
+
+```bash
+go install mvdan.cc/gofumpt@latest
+```
+
+### Running gofumpt
+
+To format and organize your import statements, run:
+
+```bash
+gofumpt -l -w .
+```
 
 ## Installation
 
