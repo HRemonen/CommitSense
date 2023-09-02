@@ -64,6 +64,52 @@ To format and organize your import statements, run:
 gofumpt -l -w .
 ```
 
+## Pre-Commit Hooks
+
+This project utilizes pre-commit hooks to ensure code quality and consistency before commits are made. Pre-commit hooks are automated checks that run locally on your development environment before you commit changes to the repository. They help maintain code quality and consistency across the project.
+
+### Available Pre-Commit Hooks
+
+We use the following pre-commit hooks from various repositories to check and format our code:
+
+#### [pre-commit/pre-commit-hooks](https://github.com/pre-commit/pre-commit-hooks)
+
+1. **check-added-large-files**: Prevents large files from being added to the repository.
+2. **trailing-whitespace**: Ensures there are no trailing whitespace characters at the end of lines.
+3. **end-of-file-fixer**: Appends a newline to the end of files if it's missing.
+4. **check-yaml**: Checks YAML files for syntax errors.
+5. **check-json**: Checks JSON files for syntax errors.
+
+#### [Bahjat/pre-commit-golang](https://github.com/Bahjat/pre-commit-golang)
+
+1. **gofumpt**: Enforces the gofumpt code style for Go code.
+2. **golangci-lint**: Runs linting checks on Go code using golangci-lint.
+3. **go-unit-tests**: Runs Go unit tests to ensure code correctness.
+
+### How to Use Pre-Commit Hooks
+
+
+1. **Install Pre-Commit**: If you haven't already installed pre-commit, you can do so by following the [installation guide](https://pre-commit.com/#install) on the Pre-Commit website.
+
+2. **Install Pre-Commit Hooks Locally**: Run the following command to install the pre-commit hooks locally in your project:
+
+    ```bash
+    pre-commit install
+    ```
+
+3. **Run Pre-Commit**: Before committing your changes, run the pre-commit hooks using:
+
+    ```bash
+    pre-commit run --all-files
+    ```
+
+    This command will run all configured hooks on your changes. If any hooks fail, they will provide feedback on what needs to be fixed.
+
+4. **Commit with Confidence**: Once all hooks pass without errors, you can commit your changes knowing that they meet the code quality and style standards defined in the pre-commit hooks.
+
+**Note for Contributors**: To maintain consistency and adhere to project standards, please do not modify the .pre-commit-config.yaml file. Changes to this file are not to be made if you want to contribute to the project.
+
+
 ## Installation
 
 To install CommitSense, you'll need [Go](https://golang.org/) installed on your system.
