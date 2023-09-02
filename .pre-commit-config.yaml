@@ -13,4 +13,3 @@ repos:
       - id: gofumpt
       - id: golangci-lint
       - id: go-unit-tests
-
