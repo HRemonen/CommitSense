@@ -50,5 +50,5 @@ linters:
     - whitespace
 
 issues:
-  # enable issues excluded by default 
+  # enable issues excluded by default
   exclude-use-default: false

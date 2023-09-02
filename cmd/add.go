@@ -14,11 +14,12 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package cmd
 
 import (
-	"commitsense/pkg/item"
 	"fmt"
 	"os"
 	"os/exec"
 	"strings"
+
+	"commitsense/pkg/item"
 
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
@@ -30,8 +31,8 @@ var addCmd = &cobra.Command{
 	Short: "Interactively select files to stage",
 	Long: `Select files that are not tracked or files that are modified and add the selected files to staging
 
-This command uses the native git add and git status commands under 
-the hood. Use this command to stage selected files before making a 
+This command uses the native git add and git status commands under
+the hood. Use this command to stage selected files before making a
 commit.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		files, err := getChangedFiles()

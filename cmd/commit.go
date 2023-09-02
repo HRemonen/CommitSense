@@ -14,11 +14,12 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package cmd
 
 import (
-	"commitsense/pkg/prompt"
 	"fmt"
 	"os"
 	"os/exec"
 	"strings"
+
+	"commitsense/pkg/prompt"
 
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
