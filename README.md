@@ -46,24 +46,6 @@ To run and fix autofixable problems, run the following command:
 golangci-lint run --fix
 ```
 
-### goimports
-
-goimports is a tool that not only formats your code but also manages import statements.
-
-To install goimports, run the following command:
-
-```bash
-go get golang.org/x/tools/cmd/goimports
-```
-
-### Running goimports
-
-To format and organize your import statements, run:
-
-```bash
-goimports -w .
-```
-
 ### gofumpt
 
 gofumpt is a stricter Go code formatter that follows the [gofumpt style](https://github.com/mvdan/gofumpt).
