@@ -1,3 +1,16 @@
+/*
+Package cmd provides commands for the commitsense application.
+
+This package contains the main commands and functionality for the commitsense application. It includes commands for interactive file selection and staging for commits. Additionally, it provides commands for creating standardized commit messages.
+
+Usage:
+  - Use the 'add' command to interactively select files to stage for committing.
+  - Use the 'commit' command to create a commit with a standardized commit message.
+
+For more information, refer to the package-specific functions and commands.
+
+Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
+*/
 package cmd
 
 import (
@@ -47,6 +60,8 @@ func PromptForString(prompt prompt.Prompt) (string, error) {
 	return promptUI.Run()
 }
 
+// PromptForMultilineString prompts the user for a multiline string input based on the provided prompt configuration.
+// Users can enter multiple lines of text until they press Enter twice to finish.
 func PromptForMultilineString(prompt prompt.Prompt) (string, error) {
 	var lines []string
 
@@ -93,7 +108,7 @@ var commitCmd = &cobra.Command{
 				if len(s) > 0 {
 					return nil
 				}
-				return fmt.Errorf("Please a commit description")
+				return fmt.Errorf("please a commit description")
 			},
 		})
 		if err != nil {
@@ -119,7 +134,7 @@ var commitCmd = &cobra.Command{
 				if s == "Y" || s == "N" || s == "y" || s == "n" {
 					return nil
 				}
-				return fmt.Errorf("Please enter Y or N")
+				return fmt.Errorf("please enter Y or N")
 			},
 		})
 		if err != nil {

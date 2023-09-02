@@ -1,4 +1,10 @@
 /*
+Package cmd provides the main entry point for the CommitSense command-line tool.
+
+CommitSense is a command-line tool designed to improve commit messages and manage GitHub issues. This package contains the root command and initializes the application. It also defines global flags and configuration settings.
+
+For more information on how to use CommitSense, run 'commitsense help'.
+
 Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 */
 package cmd

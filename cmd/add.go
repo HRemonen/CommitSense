@@ -1,4 +1,14 @@
 /*
+Package cmd provides commands for interactive file selection and staging for commitsense.
+
+This package contains the main commands and functionality for the commitsense application.
+It includes the 'add' command, which allows users to interactively select files to stage
+for committing. The 'add' command uses native Git commands under the hood.
+
+Usage:
+  - Run 'add' to interactively select files to stage.
+  - Run 'commitsense help' to view available commands and options.
+
 Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 */
 package cmd
@@ -31,6 +41,10 @@ commit.`,
 		}
 
 		selectedFilePtrs, err := promptForFiles(0, files)
+		if err != nil {
+			fmt.Println("Error:", err)
+			os.Exit(1)
+		}
 
 		for _, file := range selectedFilePtrs {
 			stageFile(file.ID)
@@ -64,7 +78,7 @@ func getChangedFiles() ([]*item.Item, error) {
 			// Extract the file path
 			parts := strings.Fields(line)
 			if len(parts) == 2 {
-				var items = []*item.Item{
+				items := []*item.Item{
 					{
 						ID: parts[1],
 					},
@@ -80,7 +94,7 @@ func promptForFiles(selectedPos int, allItems []*item.Item) ([]*item.Item, error
 	const continueItem = "Continue"
 
 	if len(allItems) > 0 && allItems[0].ID != continueItem {
-		var items = []*item.Item{
+		items := []*item.Item{
 			{
 				ID: continueItem,
 			},
