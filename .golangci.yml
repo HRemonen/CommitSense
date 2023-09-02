@@ -1,7 +1,7 @@
 linters-settings:
   funlen:
-    lines: 100
-    statements: 50
+    lines: 60
+    statements: 40
   gocyclo:
     min-complexity: 15
   goimports:
