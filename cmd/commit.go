@@ -216,7 +216,7 @@ func CreateCommitMessage(commitType, commitScope, commitDescription string, comm
 // CreateGitCommit creates a Git commit with the given message and files.
 func CreateGitCommit(message string, files []string) error {
 	commitArgs := append([]string{"commit", "-m", message}, files...)
-	commitGitCmd := exec.Command("git", commitArgs...)
+	commitGitCmd := exec.Command("git", commitArgs...) //nolint:gosec
 	commitGitCmd.Stdout = os.Stdout
 	commitGitCmd.Stderr = os.Stderr
 
