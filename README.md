@@ -80,14 +80,14 @@ We use the following pre-commit hooks from various repositories to check and for
 4. **check-yaml**: Checks YAML files for syntax errors.
 5. **check-json**: Checks JSON files for syntax errors.
 
-#### [Bahjat/pre-commit-golang](https://github.com/Bahjat/pre-commit-golang)
+#### [TekWizely/pre-commit-golang](https://github.com/TekWizely/pre-commit-golang)
 
-1. **gofumpt**: Enforces the gofumpt code style for Go code.
+1. **go-fumpt**: Enforces the gofumpt code style for Go code.
 2. **golangci-lint**: Runs linting checks on Go code using golangci-lint.
-3. **go-unit-tests**: Runs Go unit tests to ensure code correctness.
+3. **go-test-mod**: Ensures that your Go code's `go.mod` and `go.sum` files are up-to-date.
+
 
 ### How to Use Pre-Commit Hooks
-
 
 1. **Install Pre-Commit**: If you haven't already installed pre-commit, you can do so by following the [installation guide](https://pre-commit.com/#install) on the Pre-Commit website.
 
