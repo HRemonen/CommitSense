@@ -1,3 +1,10 @@
+/*
+Package commit provides functionality for creating Git commits.
+
+This file includes utility functions for interacting with the user.
+
+Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
+*/
 package commit
 
 import (
@@ -60,6 +67,11 @@ func PromptForMultilineString(prompt prompt.Prompt) (string, error) {
 	return strings.Join(lines, "\n"), nil
 }
 
+// PromptForCoAuthors displays a prompt to select or enter co-authors for a Git commit.
+//
+// This function retrieves a list of suggested co-authors using the GetSuggestedCoAuthors function
+// from the author package. It then presents the user with a selectable list of suggested co-authors
+// and allows them to choose from the suggestions or enter custom co-authors.
 func PromptForCoAuthors(prompt prompt.Prompt) ([]string, error) {
 	suggestedCoAuthors, err := author.GetSuggestedCoAuthors()
 	if err != nil {

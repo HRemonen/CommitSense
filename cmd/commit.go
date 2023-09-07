@@ -79,6 +79,10 @@ var commitCmd = &cobra.Command{
 			coAuthors, err = commit.PromptForCoAuthors(prompt.Prompt{
 				Label: "Select authors that are involded",
 			})
+			if err != nil {
+				fmt.Println("Prompt failed:", err)
+				os.Exit(1)
+			}
 		}
 
 		isBreakingChange, err := commit.PromptForBool(prompt.Prompt{

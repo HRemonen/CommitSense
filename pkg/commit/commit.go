@@ -1,6 +1,14 @@
+/*
+Package commit provides functionality for creating Git commits.
+
+This file includes utility functions for interacting with Git and creating Git commits.
+
+Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
+*/
 package commit
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"strings"
@@ -28,7 +36,7 @@ func GetStagedFiles() ([]string, error) {
 }
 
 // CreateCommitMessage creates a commit message in the Conventional Commits format.
-func CreateCommitMessage(commitInfo CommitInfo) string {
+func createCommitMessage(commitInfo CommitInfo) string {
 	commitMessage := commitInfo.CommitType
 	if commitInfo.CommitScope != "" {
 		commitMessage += "(" + commitInfo.CommitScope + ")"
@@ -44,7 +52,6 @@ func CreateCommitMessage(commitInfo CommitInfo) string {
 		commitMessage += "\n\n" + commitInfo.CommitBody
 	}
 
-	//Add space between body and footer as per the spec
 	if commitInfo.IsBreakingChange {
 		commitMessage += "\n\n"
 	}
@@ -58,7 +65,10 @@ func CreateCommitMessage(commitInfo CommitInfo) string {
 
 // CreateGitCommit creates a Git commit with the given message and files.
 func CreateGitCommit(commitInfo CommitInfo, files []string) error {
-	commitMessage := CreateCommitMessage(commitInfo)
+	commitMessage := createCommitMessage(commitInfo)
+
+	fmt.Println(commitMessage, files)
+
 	commitArgs := append([]string{"commit", "-m", commitMessage}, files...)
 
 	commitGitCmd := exec.Command("git", commitArgs...) //nolint:gosec // because I do not think the users can do anything bad here
