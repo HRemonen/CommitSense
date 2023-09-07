@@ -65,6 +65,22 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		isCoAuthored, err := commit.PromptForBool(prompt.Prompt{
+			Label:    "Is this commit co-authored by someone?",
+			Validate: validators.ValidateStringYesNo,
+		})
+		if err != nil {
+			fmt.Println("Prompt failed:", err)
+			os.Exit(1)
+		}
+
+		var coAuthors []string
+		if isCoAuthored {
+			coAuthors, err = commit.PromptForCoAuthors(prompt.Prompt{
+				Label: "Select authors that are involded",
+			})
+		}
+
 		isBreakingChange, err := commit.PromptForBool(prompt.Prompt{
 			Label:    "Is this a breaking change?",
 			Validate: validators.ValidateStringYesNo,
@@ -86,11 +102,13 @@ var commitCmd = &cobra.Command{
 		}
 
 		commitInfo := commit.CommitInfo{
-			CommitType:         commitType,
-			CommitScope:        commitScope,
-			CommitDescription:  commitDescription,
-			CommitBody:         commitBody,
-			IsBreakingChange:   isBreakingChange,
+			CommitType:                commitType,
+			CommitScope:               commitScope,
+			CommitDescription:         commitDescription,
+			CommitBody:                commitBody,
+			IsCoAuthored:              isCoAuthored,
+			CoAuthors:                 coAuthors,
+			IsBreakingChange:          isBreakingChange,
 			BreakingChangeDescription: breakingChangeDescription,
 		}
 

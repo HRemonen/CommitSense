@@ -5,6 +5,8 @@ type CommitInfo struct {
 	CommitScope               string
 	CommitDescription         string
 	CommitBody                string
+	IsCoAuthored              bool
+	CoAuthors                 []string
 	IsBreakingChange          bool
 	BreakingChangeDescription string
 }

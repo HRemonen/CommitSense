@@ -1,6 +1,7 @@
 package commit
 
 import (
+	"commitsense/pkg/author"
 	"commitsense/pkg/prompt"
 	"strings"
 
@@ -19,13 +20,13 @@ func PromptCommitType() (string, error) {
 
 // PromptForBool prompts the user to enter a boolean value.
 func PromptForBool(prompt prompt.Prompt) (bool, error) {
-	promptUI := promptui.Prompt{
+	promptBool := promptui.Prompt{
 		Label:    prompt.Label,
 		Validate: prompt.Validate,
 		Default:  prompt.Default,
 	}
 
-	result, err := promptUI.Run()
+	result, err := promptBool.Run()
 	if err != nil {
 		return false, err
 	}
@@ -35,12 +36,12 @@ func PromptForBool(prompt prompt.Prompt) (bool, error) {
 
 // PromptForString prompts the user to enter a string.
 func PromptForString(prompt prompt.Prompt) (string, error) {
-	promptUI := promptui.Prompt{
+	promptString := promptui.Prompt{
 		Label:    prompt.Label,
 		Validate: prompt.Validate,
 		Default:  prompt.Default,
 	}
-	return promptUI.Run()
+	return promptString.Run()
 }
 
 // PromptForMultilineString prompts the user for a multiline string input based on the provided prompt configuration.
@@ -57,4 +58,20 @@ func PromptForMultilineString(prompt prompt.Prompt) (string, error) {
 	}
 
 	return strings.Join(lines, "\n"), nil
+}
+
+func PromptForCoAuthors(prompt prompt.Prompt) ([]string, error) {
+	suggestedCoAuthors, err := author.GetSuggestedCoAuthors()
+	if err != nil {
+		return nil, err
+	}
+
+	// Present the user with a list of suggested co-authors and allow them to select or enter custom co-authors.
+	promptCoAuthors := promptui.Select{
+		Label: prompt.Label,
+		Items: suggestedCoAuthors,
+	}
+
+	_, authorResult, err := promptCoAuthors.Run()
+	return []string{authorResult}, err
 }
