@@ -14,68 +14,15 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package cmd
 
 import (
+	"commitsense/pkg/commit"
 	"commitsense/pkg/prompt"
 	"fmt"
 	"os"
 	"os/exec"
 	"strings"
 
-	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
-
-// SelectCommitType prompts the user to select a commit type.
-func SelectCommitType() (string, error) {
-	promptType := promptui.Select{
-		Label: "Select a commit type",
-		Items: []string{"feat", "fix", "chore", "docs", "style", "refactor", "perf", "test", "build", "ci"},
-	}
-	_, typeResult, err := promptType.Run()
-	return typeResult, err
-}
-
-// PromptForBool prompts the user to enter a boolean value.
-func PromptForBool(prompt prompt.Prompt) (bool, error) {
-	promptUI := promptui.Prompt{
-		Label:    prompt.Label,
-		Validate: prompt.Validate,
-		Default:  prompt.Default,
-	}
-
-	result, err := promptUI.Run()
-	if err != nil {
-		return false, err
-	}
-
-	return result == "Y" || result == "y", nil
-}
-
-// PromptForString prompts the user to enter a string.
-func PromptForString(prompt prompt.Prompt) (string, error) {
-	promptUI := promptui.Prompt{
-		Label:    prompt.Label,
-		Validate: prompt.Validate,
-		Default:  prompt.Default,
-	}
-	return promptUI.Run()
-}
-
-// PromptForMultilineString prompts the user for a multiline string input based on the provided prompt configuration.
-// Users can enter multiple lines of text until they press Enter twice to finish.
-func PromptForMultilineString(prompt prompt.Prompt) (string, error) {
-	var lines []string
-
-	for {
-		line, err := PromptForString(prompt)
-		if err != nil || line == "" {
-			break
-		}
-
-		lines = append(lines, line)
-	}
-
-	return strings.Join(lines, "\n"), nil
-}
 
 // CommitCmd represents the commit command.
 var commitCmd = &cobra.Command{
@@ -88,13 +35,13 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		commitType, err := SelectCommitType()
+		commitType, err := commit.PromptCommitType()
 		if err != nil {
 			fmt.Println("Prompt failed:", err)
 			os.Exit(1)
 		}
 
-		commitScope, err := PromptForString(prompt.Prompt{
+		commitScope, err := commit.PromptForString(prompt.Prompt{
 			Label: "Enter a commit scope (optional)",
 		})
 		if err != nil {
@@ -102,13 +49,13 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		commitDescription, err := PromptForString(prompt.Prompt{
+		commitDescription, err := commit.PromptForString(prompt.Prompt{
 			Label: "Enter a brief commit description",
 			Validate: func(s string) error {
 				if len(s) > 0 {
 					return nil
 				}
-				return fmt.Errorf("please a commit description")
+				return fmt.Errorf("please enter a valid string")
 			},
 		})
 		if err != nil {
@@ -116,7 +63,7 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		commitBody, err := PromptForMultilineString(prompt.Prompt{
+		commitBody, err := commit.PromptForMultilineString(prompt.Prompt{
 			Label: "Enter a detailed commit body (press Enter twice to finish)",
 			Validate: func(s string) error {
 				// Accept any input
@@ -128,7 +75,7 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		isBreakingChange, err := PromptForBool(prompt.Prompt{
+		isBreakingChange, err := commit.PromptForBool(prompt.Prompt{
 			Label: "Is this a breaking change?",
 			Validate: func(s string) error {
 				if s == "Y" || s == "N" || s == "y" || s == "n" {
@@ -144,7 +91,7 @@ var commitCmd = &cobra.Command{
 
 		var breakingChangeDescription string
 		if isBreakingChange {
-			breakingChangeDescription, err = PromptForString(prompt.Prompt{
+			breakingChangeDescription, err = commit.PromptForString(prompt.Prompt{
 				Label: "Enter a description of the breaking change",
 			})
 			if err != nil {
