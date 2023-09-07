@@ -1,6 +1,7 @@
 package author
 
 import (
+	"fmt"
 	"os/exec"
 	"strings"
 )
@@ -15,6 +16,8 @@ func GetSuggestedCoAuthors() ([]string, error) {
 
 	// Parse the output to extract author names and email addresses.
 	lines := strings.Split(string(output), "\n")
+
+	fmt.Println(lines)
 	var suggestedCoAuthors []string
 	for _, line := range lines {
 		if strings.HasPrefix(line, "'") && strings.HasSuffix(line, "'") {
