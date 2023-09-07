@@ -16,6 +16,7 @@ package cmd
 import (
 	"commitsense/pkg/commit"
 	"commitsense/pkg/prompt"
+	"commitsense/pkg/validators"
 	"fmt"
 	"os"
 
@@ -48,13 +49,8 @@ var commitCmd = &cobra.Command{
 		}
 
 		commitDescription, err := commit.PromptForString(prompt.Prompt{
-			Label: "Enter a brief commit description",
-			Validate: func(s string) error {
-				if len(s) > 0 {
-					return nil
-				}
-				return fmt.Errorf("please enter a valid string")
-			},
+			Label:    "Enter a brief commit description",
+			Validate: validators.ValidateStringNotEmpty,
 		})
 		if err != nil {
 			fmt.Println("Prompt failed:", err)
@@ -63,10 +59,6 @@ var commitCmd = &cobra.Command{
 
 		commitBody, err := commit.PromptForMultilineString(prompt.Prompt{
 			Label: "Enter a detailed commit body (press Enter twice to finish)",
-			Validate: func(s string) error {
-				// Accept any input
-				return nil
-			},
 		})
 		if err != nil {
 			fmt.Println("Prompt failed:", err)
@@ -74,13 +66,8 @@ var commitCmd = &cobra.Command{
 		}
 
 		isBreakingChange, err := commit.PromptForBool(prompt.Prompt{
-			Label: "Is this a breaking change?",
-			Validate: func(s string) error {
-				if s == "Y" || s == "N" || s == "y" || s == "n" {
-					return nil
-				}
-				return fmt.Errorf("please enter Y or N")
-			},
+			Label:    "Is this a breaking change?",
+			Validate: validators.ValidateStringYesNo,
 		})
 		if err != nil {
 			fmt.Println("Prompt failed:", err)
