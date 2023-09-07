@@ -28,32 +28,39 @@ func GetStagedFiles() ([]string, error) {
 }
 
 // CreateCommitMessage creates a commit message in the Conventional Commits format.
-func CreateCommitMessage(commitType, commitScope, commitDescription string, commitBody string, isBreakingChange bool, breakingChangeDescription string) string {
-	commitMessage := commitType
-	if commitScope != "" {
-		commitMessage += "(" + commitScope + ")"
+func CreateCommitMessage(commitInfo CommitInfo) string {
+	commitMessage := commitInfo.CommitType
+	if commitInfo.CommitScope != "" {
+		commitMessage += "(" + commitInfo.CommitScope + ")"
 	}
 
-	if isBreakingChange {
+	if commitInfo.IsBreakingChange {
 		commitMessage += "!"
 	}
 
-	commitMessage += ": " + commitDescription
+	commitMessage += ": " + commitInfo.CommitDescription
 
-	if commitBody != "" {
-		commitMessage += "\n\n" + commitBody
+	if commitInfo.CommitBody != "" {
+		commitMessage += "\n\n" + commitInfo.CommitBody
 	}
 
-	if isBreakingChange {
-		commitMessage += "\n\nBREAKING CHANGE: " + breakingChangeDescription
+	//Add space between body and footer as per the spec
+	if commitInfo.IsBreakingChange {
+		commitMessage += "\n\n"
+	}
+
+	if commitInfo.IsBreakingChange {
+		commitMessage += "BREAKING CHANGE: " + commitInfo.BreakingChangeDescription
 	}
 
 	return commitMessage
 }
 
 // CreateGitCommit creates a Git commit with the given message and files.
-func CreateGitCommit(message string, files []string) error {
-	commitArgs := append([]string{"commit", "-m", message}, files...)
+func CreateGitCommit(commitInfo CommitInfo, files []string) error {
+	commitMessage := CreateCommitMessage(commitInfo)
+	commitArgs := append([]string{"commit", "-m", commitMessage}, files...)
+
 	commitGitCmd := exec.Command("git", commitArgs...) //nolint:gosec // because I do not think the users can do anything bad here
 	commitGitCmd.Stdout = os.Stdout
 	commitGitCmd.Stderr = os.Stderr

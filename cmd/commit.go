@@ -85,9 +85,16 @@ var commitCmd = &cobra.Command{
 			}
 		}
 
-		commitMessage := commit.CreateCommitMessage(commitType, commitScope, commitDescription, commitBody, isBreakingChange, breakingChangeDescription)
+		commitInfo := commit.CommitInfo{
+			CommitType:         commitType,
+			CommitScope:        commitScope,
+			CommitDescription:  commitDescription,
+			CommitBody:         commitBody,
+			IsBreakingChange:   isBreakingChange,
+			BreakingChangeDescription: breakingChangeDescription,
+		}
 
-		if err := commit.CreateGitCommit(commitMessage, stagedFiles); err != nil {
+		if err := commit.CreateGitCommit(commitInfo, stagedFiles); err != nil {
 			fmt.Println("Error creating commit:", err)
 			os.Exit(1)
 		}
