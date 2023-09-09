@@ -40,7 +40,7 @@ func createCommitMessage(commitInfo Info) string {
 	var commitMessage string
 
 	if commitInfo.CommitType == "docs" {
-		commitMessage = "[skip ci]" + commitInfo.CommitType
+		commitMessage = "[skip ci] " + commitInfo.CommitType
 	} else {
 		commitMessage = commitInfo.CommitType
 	}
