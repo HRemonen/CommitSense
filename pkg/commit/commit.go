@@ -52,15 +52,18 @@ func createCommitMessage(commitInfo Info) string {
 		commitMessage += "\n\n" + commitInfo.CommitBody
 	}
 
-	if commitInfo.IsCoAuthored {
+	if commitInfo.IsBreakingChange || commitInfo.IsCoAuthored {
 		commitMessage += "\n"
-		for _, coauth := range commitInfo.CoAuthors {
-			commitMessage += "\nCo-authored-by: " + coauth
-		}
 	}
 
 	if commitInfo.IsBreakingChange {
-		commitMessage += "\n\nBREAKING CHANGE: " + commitInfo.BreakingChangeDescription
+		commitMessage += "\nBREAKING CHANGE: " + commitInfo.BreakingChangeDescription
+	}
+
+	if commitInfo.IsCoAuthored {
+		for _, coauth := range commitInfo.CoAuthors {
+			commitMessage += "\nCo-authored-by: " + coauth
+		}
 	}
 
 	return commitMessage
