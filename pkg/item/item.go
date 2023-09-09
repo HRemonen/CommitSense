@@ -13,8 +13,7 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 */
 package item
 
-// Item represents an item with an ID referring to a file path in a Git repository
-// and an IsSelected field to track its staging status.
+// Item represents an item with an ID referring to a certain item in a multiselect prompt
 type Item struct {
 	ID         string
 	IsSelected bool
