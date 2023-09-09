@@ -23,6 +23,7 @@ import (
 
 	"github.com/spf13/cobra"
 )
+var isCoAuthored bool
 
 // CommitCmd represents the commit command.
 var commitCmd = &cobra.Command{
@@ -60,15 +61,6 @@ var commitCmd = &cobra.Command{
 
 		commitBody, err := commit.PromptForMultilineString(prompt.Prompt{
 			Label: "Enter a detailed commit body (press Enter twice to finish)",
-		})
-		if err != nil {
-			fmt.Println("Prompt failed:", err)
-			os.Exit(1)
-		}
-
-		isCoAuthored, err := commit.PromptForBool(prompt.Prompt{
-			Label:    "Is this commit co-authored by someone?",
-			Validate: validators.ValidateStringYesNo,
 		})
 		if err != nil {
 			fmt.Println("Prompt failed:", err)
@@ -136,4 +128,6 @@ var commitCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(commitCmd)
+	
+	commitCmd.Flags().BoolVarP(&isCoAuthored, "isCoAuthored", "a", false, "Enable co-authoring")
 }
