@@ -23,7 +23,11 @@ import (
 
 	"github.com/spf13/cobra"
 )
-var isCoAuthored bool
+
+var (
+	isCoAuthored     bool
+	isBreakingChange bool
+)
 
 // CommitCmd represents the commit command.
 var commitCmd = &cobra.Command{
@@ -86,15 +90,6 @@ var commitCmd = &cobra.Command{
 			}
 		}
 
-		isBreakingChange, err := commit.PromptForBool(prompt.Prompt{
-			Label:    "Is this a breaking change?",
-			Validate: validators.ValidateStringYesNo,
-		})
-		if err != nil {
-			fmt.Println("Prompt failed:", err)
-			os.Exit(1)
-		}
-
 		var breakingChangeDescription string
 		if isBreakingChange {
 			breakingChangeDescription, err = commit.PromptForString(prompt.Prompt{
@@ -128,6 +123,7 @@ var commitCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(commitCmd)
-	
+
 	commitCmd.Flags().BoolVarP(&isCoAuthored, "isCoAuthored", "a", false, "Enable co-authoring")
+	commitCmd.Flags().BoolVarP(&isBreakingChange, "isBreakingChange", "b", false, "Commit is introducing a breaking change")
 }
