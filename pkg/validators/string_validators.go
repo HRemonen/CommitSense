@@ -1,3 +1,14 @@
+/*
+Package validators provides a collection of utility functions for validating various data types.
+
+This package includes functions for validating different types of data, such as strings, numbers, and more. It serves as a library of validation functions that can be used across various applications.
+
+Usage:
+  - Explore the available validation functions to find the one that suits your validation needs.
+  - Call the relevant validation function to ensure the integrity of your data.
+
+Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
+*/
 package validators
 
 import "fmt"

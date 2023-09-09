@@ -1,3 +1,15 @@
+/*
+Package author provides functions for working with Git commit authors and co-authors.
+
+This package includes functions for retrieving suggested co-authors who have made commits in the Git repository.
+It uses the `git log` command to extract author names and email addresses from the commit history. The resulting list
+of authors can be used when creating Git commits with co-authors.
+
+Usage:
+  - Call the GetSuggestedCoAuthors function to obtain a list of suggested co-authors based on the Git commit history.
+
+Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
+*/
 package author
 
 import (
