@@ -85,6 +85,8 @@ var commitCmd = &cobra.Command{
 			}
 		}
 
+		fmt.Println(coAuthors)
+
 		isBreakingChange, err := commit.PromptForBool(prompt.Prompt{
 			Label:    "Is this a breaking change?",
 			Validate: validators.ValidateStringYesNo,

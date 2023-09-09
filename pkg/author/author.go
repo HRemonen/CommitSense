@@ -13,6 +13,7 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package author
 
 import (
+	"commitsense/pkg/item"
 	"os/exec"
 	"strings"
 )
@@ -22,7 +23,7 @@ import (
 // This function uses the `git log` command to obtain a list of authors who have made commits in the Git repository.
 // It executes the command and processes the output to extract author names and email addresses. The resulting
 // list represents suggested co-authors for Git commits.
-func GetSuggestedCoAuthors() ([]string, error) {
+func GetSuggestedCoAuthors() ([]*item.Item, error) {
 	// Use the `git rev-list` command to obtain a list of authors who have made commits in the Git repository.
 	revlist := "git log --pretty='%an <%ae>' | sort -u"
 	cmd := exec.Command("bash", "-c", revlist)
@@ -36,7 +37,18 @@ func GetSuggestedCoAuthors() ([]string, error) {
 	authorString = strings.ReplaceAll(authorString, `\n`, "\n")
 
 	// Parse the output to extract author names and email addresses.
-	suggestedCoAuthors := strings.Split(authorString, "\n")
+	lines := strings.Split(authorString, "\n")
+
+	var suggestedCoAuthors []*item.Item
+	for _, line := range lines {
+		items := []*item.Item{
+			{
+				ID: line,
+			},
+		}
+		suggestedCoAuthors = append(suggestedCoAuthors, items...)
+	}
+
 
 	return suggestedCoAuthors, nil
 }
