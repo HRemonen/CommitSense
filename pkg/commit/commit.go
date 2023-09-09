@@ -36,7 +36,7 @@ func GetStagedFiles() ([]string, error) {
 }
 
 // CreateCommitMessage creates a commit message in the Conventional Commits format.
-func createCommitMessage(commitInfo CommitInfo) string {
+func createCommitMessage(commitInfo Info) string {
 	commitMessage := commitInfo.CommitType
 	if commitInfo.CommitScope != "" {
 		commitMessage += "(" + commitInfo.CommitScope + ")"
@@ -64,7 +64,7 @@ func createCommitMessage(commitInfo CommitInfo) string {
 }
 
 // CreateGitCommit creates a Git commit with the given message and files.
-func CreateGitCommit(commitInfo CommitInfo, files []string) error {
+func CreateGitCommit(commitInfo Info, files []string) error {
 	commitMessage := createCommitMessage(commitInfo)
 
 	fmt.Println(commitMessage, files)
