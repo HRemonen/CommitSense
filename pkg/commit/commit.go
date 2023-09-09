@@ -37,7 +37,14 @@ func GetStagedFiles() ([]string, error) {
 
 // CreateCommitMessage creates a commit message in the Conventional Commits format.
 func createCommitMessage(commitInfo Info) string {
-	commitMessage := commitInfo.CommitType
+	var commitMessage string
+
+	if commitInfo.CommitType == "docs" {
+		commitMessage = "[skip ci]" + commitInfo.CommitType
+	} else {
+		commitMessage = commitInfo.CommitType
+	}
+
 	if commitInfo.CommitScope != "" {
 		commitMessage += "(" + commitInfo.CommitScope + ")"
 	}

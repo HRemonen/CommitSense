@@ -124,6 +124,6 @@ var commitCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(commitCmd)
 
-	commitCmd.Flags().BoolVarP(&isCoAuthored, "isCoAuthored", "a", false, "Enable co-authoring")
-	commitCmd.Flags().BoolVarP(&isBreakingChange, "isBreakingChange", "b", false, "Commit is introducing a breaking change")
+	commitCmd.Flags().BoolVarP(&isCoAuthored, "is coauthored", "a", false, "Enable co-authoring")
+	commitCmd.Flags().BoolVarP(&isBreakingChange, "is breaking", "b", false, "Commit is introducing a breaking change")
 }
