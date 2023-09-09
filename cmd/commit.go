@@ -14,6 +14,7 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package cmd
 
 import (
+	"commitsense/pkg/author"
 	"commitsense/pkg/commit"
 	"commitsense/pkg/prompt"
 	"commitsense/pkg/validators"
@@ -76,16 +77,22 @@ var commitCmd = &cobra.Command{
 
 		var coAuthors []string
 		if isCoAuthored {
+			suggestedCoAuthors, err := author.GetSuggestedCoAuthors()
+			if err != nil {
+				fmt.Println("Prompt failed:", err)
+				os.Exit(1)
+			}
+
 			coAuthors, err = commit.PromptForCoAuthors(prompt.Prompt{
-				Label: "Select authors that are involded",
+				Label:     "Select authors that are involded",
+				Items:     suggestedCoAuthors,
+				CursorPos: 0,
 			})
 			if err != nil {
 				fmt.Println("Prompt failed:", err)
 				os.Exit(1)
 			}
 		}
-
-		fmt.Println(coAuthors)
 
 		isBreakingChange, err := commit.PromptForBool(prompt.Prompt{
 			Label:    "Is this a breaking change?",

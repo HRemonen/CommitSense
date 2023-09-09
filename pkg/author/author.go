@@ -49,6 +49,5 @@ func GetSuggestedCoAuthors() ([]*item.Item, error) {
 		suggestedCoAuthors = append(suggestedCoAuthors, items...)
 	}
 
-
 	return suggestedCoAuthors, nil
 }

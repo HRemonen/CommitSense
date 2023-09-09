@@ -8,7 +8,6 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package commit
 
 import (
-	"commitsense/pkg/author"
 	"commitsense/pkg/item"
 	"commitsense/pkg/prompt"
 	"fmt"
@@ -69,8 +68,9 @@ func PromptForMultilineString(prompt prompt.Prompt) (string, error) {
 	return strings.Join(lines, "\n"), nil
 }
 
-func promptForMultiple(selectedPos int, allItems []*item.Item) ([]*item.Item, error) {
+func promptForMultiple(prompt prompt.Prompt) ([]*item.Item, error) {
 	const continueItem = "Continue"
+	allItems := prompt.Items
 
 	if len(allItems) > 0 && allItems[0].ID != continueItem {
 		items := []*item.Item{
@@ -88,16 +88,16 @@ func promptForMultiple(selectedPos int, allItems []*item.Item) ([]*item.Item, er
 		Inactive: "{{if .IsSelected }}✔ {{ .ID | green }} {{else}}{{ .ID | faint }}{{end}} ",
 	}
 
-	prompt := promptui.Select{
-		Label:        "Select multiple",
+	promptMultiple := promptui.Select{
+		Label:        prompt.Label,
 		Items:        allItems,
 		Templates:    templates,
 		Size:         10,
-		CursorPos:    selectedPos,
+		CursorPos:    prompt.CursorPos,
 		HideSelected: true,
 	}
 
-	selectionIdx, _, err := prompt.Run()
+	selectionIdx, _, err := promptMultiple.Run()
 	if err != nil {
 		return nil, fmt.Errorf("prompt failed: %w", err)
 	}
@@ -108,8 +108,8 @@ func promptForMultiple(selectedPos int, allItems []*item.Item) ([]*item.Item, er
 		// If the user selected something other than "Continue",
 		// toggle selection on this item and run the function again.
 		chosenItem.IsSelected = !chosenItem.IsSelected
-
-		return promptForMultiple(selectionIdx, allItems)
+		prompt.CursorPos = selectionIdx
+		return promptForMultiple(prompt)
 	}
 
 	var selectedItems []*item.Item
@@ -127,12 +127,7 @@ func promptForMultiple(selectedPos int, allItems []*item.Item) ([]*item.Item, er
 // from the author package. It then presents the user with a selectable list of suggested co-authors
 // and allows them to choose from the suggestions or enter custom co-authors.
 func PromptForCoAuthors(prompt prompt.Prompt) ([]string, error) {
-	suggestedCoAuthors, err := author.GetSuggestedCoAuthors()
-	if err != nil {
-		return nil, err
-	}
-
-	selectedAuthorPtrs, err := promptForMultiple(0, suggestedCoAuthors)
+	selectedAuthorPtrs, err := promptForMultiple(prompt)
 	if err != nil {
 		return nil, err
 	}

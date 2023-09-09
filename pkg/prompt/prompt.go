@@ -13,9 +13,13 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 */
 package prompt
 
+import "commitsense/pkg/item"
+
 // Prompt represents a promptui prompt object used for user input.
 type Prompt struct {
-	Label    string
-	Validate func(string) error
-	Default  string
+	Label     string
+	Items     []*item.Item
+	CursorPos int
+	Validate  func(string) error
+	Default   string
 }
