@@ -39,6 +39,6 @@ changelog:
 brews:
 - name: commitsense
   homepage: https://github.com/HRemonen/homebrew-commitsense
-  tap:
+  repository:
     owner: HRemonen
     name: homebrew-commitsense
