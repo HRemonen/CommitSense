@@ -13,12 +13,22 @@ Here's the cool part: CommitSense plays well with native Git commands under the 
 
 But, there's one thing to note: CommitSense doesn't support chunking files when adding. So, for those complex file-staging tasks, you might want to stick to the classic `git add` method.
 
+## Install
+
+### Homebrew
+
+Check out the homebrew formula [repository](https://github.com/HRemonen/homebrew-commitsense) for installation guide.
+
+### Other
+
+Idk. Just clone the repo and use the binary.
+
 ## Usage
 
 ### Adding Files
 
 ```bash
-./commitsense add
+commitsense add
 ```
 
 This command launches an interactive interface for selecting files to stage.
@@ -26,7 +36,7 @@ This command launches an interactive interface for selecting files to stage.
 ### Creating Commits
 
 ```bash
-./commitsense commit
+commitsense commit
 ```
 
 This command guides you through creating a commit message according to the Conventional Commits format.
