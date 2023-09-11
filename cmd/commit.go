@@ -36,13 +36,13 @@ var commitCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		stagedFiles, err := commit.GetStagedFiles()
 		if err != nil {
-			fmt.Println("Error:", err)
+			fmt.Println("Error: ", err)
 			os.Exit(1)
 		}
 
 		commitType, err := commit.PromptCommitType()
 		if err != nil {
-			fmt.Println("Prompt failed:", err)
+			fmt.Println("Error prompting for the commit type: ", err)
 			os.Exit(1)
 		}
 
@@ -50,7 +50,7 @@ var commitCmd = &cobra.Command{
 			Label: "Enter a commit scope (optional)",
 		})
 		if err != nil {
-			fmt.Println("Prompt failed:", err)
+			fmt.Println("Error prompting for the commit scope:", err)
 			os.Exit(1)
 		}
 
@@ -59,7 +59,7 @@ var commitCmd = &cobra.Command{
 			Validate: validators.ValidateStringNotEmpty,
 		})
 		if err != nil {
-			fmt.Println("Prompt failed:", err)
+			fmt.Println("Error prompting for the commit description:", err)
 			os.Exit(1)
 		}
 
@@ -67,7 +67,7 @@ var commitCmd = &cobra.Command{
 			Label: "Enter a detailed commit body (press Enter twice to finish)",
 		})
 		if err != nil {
-			fmt.Println("Prompt failed:", err)
+			fmt.Println("Error prompting for the commit body:", err)
 			os.Exit(1)
 		}
 
@@ -75,7 +75,7 @@ var commitCmd = &cobra.Command{
 		if isCoAuthored {
 			suggestedCoAuthors, err := author.GetSuggestedCoAuthors()
 			if err != nil {
-				fmt.Println("Prompt failed:", err)
+				fmt.Println("Error getting the suggested co-authors:", err)
 				os.Exit(1)
 			}
 
@@ -85,7 +85,7 @@ var commitCmd = &cobra.Command{
 				CursorPos: 0,
 			})
 			if err != nil {
-				fmt.Println("Prompt failed:", err)
+				fmt.Println("Error prompting for the co-authors:", err)
 				os.Exit(1)
 			}
 		}
@@ -96,7 +96,7 @@ var commitCmd = &cobra.Command{
 				Label: "Enter a description of the breaking change",
 			})
 			if err != nil {
-				fmt.Println("Prompt failed:", err)
+				fmt.Println("Error prompting for the breaking change description:", err)
 				os.Exit(1)
 			}
 		}
