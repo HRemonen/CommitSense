@@ -14,22 +14,11 @@ import (
 	"strings"
 )
 
-func containsPrefix(s string) bool {
-	// Array of all the git status prefixes we want to stage
-	gitPrefixes := []string{"M", "T", "A", "D", "R", "C", "U"}
-
-	for _, prefix := range gitPrefixes {
-		if strings.HasPrefix(s, prefix) {
-			return true
-		}
-	}
-	return false
-}
-
 // GetStagedFiles returns a list of staged files.
 func GetStagedFiles() ([]string, error) {
-	statusCmd := exec.Command("git", "status", "--porcelain")
-	output, err := statusCmd.CombinedOutput()
+	statusCmd := "git status --porcelain --untracked-files=all | grep '^[A|C|M|D|R]'"
+	cmd := exec.Command("bash", "-c", statusCmd)
+	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return nil, err
 	}
@@ -39,13 +28,6 @@ func GetStagedFiles() ([]string, error) {
 	for _, line := range lines {
 		// Strip leading and trailing whitespace
 		line = strings.TrimSpace(line)
-
-		if containsPrefix(line) {
-			parts := strings.Fields(line)
-			if len(parts) == 2 {
-				stagedFiles = append(stagedFiles, parts[1])
-			}
-		}
 	}
 	return stagedFiles, nil
 }
