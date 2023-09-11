@@ -16,15 +16,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var validArgs = []string{"add", "commit"}
+
 var rootCmd = &cobra.Command{
-	Use:   "commitsense",
+	Use:   "commitsense [COMMAND]",
 	Short: "A tool to improve commit messages",
 	Long: `
 CommitSense is a command-line tool that simplifies Git 
 version control by providing an interactive and standardized way to stage 
 files and create commit messages following the Conventional Commits specification.
 `,
-	TraverseChildren: true,
+	TraverseChildren:   true,
+	DisableSuggestions: false,
+	Args:               cobra.OnlyValidArgs,
+	ValidArgs:          validArgs,
 }
 
 // Execute command for the root command
