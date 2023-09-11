@@ -19,10 +19,11 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "commitsense",
 	Short: "A tool to improve commit messages",
-	Long: `CommitSense is a command-line tool that simplifies Git 
-	version control by providing an interactive and standardized way to stage 
-	files and create commit messages following the Conventional Commits specification.
-	`,
+	Long: `
+CommitSense is a command-line tool that simplifies Git 
+version control by providing an interactive and standardized way to stage 
+files and create commit messages following the Conventional Commits specification.
+`,
 	TraverseChildren: true,
 }
 
