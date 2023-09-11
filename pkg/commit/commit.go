@@ -28,7 +28,14 @@ func GetStagedFiles() ([]string, error) {
 	for _, line := range lines {
 		// Strip leading and trailing whitespace
 		line = strings.TrimSpace(line)
+
+		parts := strings.Fields(line)
+		if len(parts) == 2 {
+			stagedFiles = append(stagedFiles, parts[1])
+		}
 	}
+
+	fmt.Println(stagedFiles)
 	return stagedFiles, nil
 }
 
@@ -74,8 +81,6 @@ func createCommitMessage(commitInfo Info) string {
 // CreateGitCommit creates a Git commit with the given message and files.
 func CreateGitCommit(commitInfo Info, files []string) error {
 	commitMessage := createCommitMessage(commitInfo)
-
-	fmt.Println(commitMessage, files)
 
 	commitArgs := append([]string{"commit", "-m", commitMessage}, files...)
 
