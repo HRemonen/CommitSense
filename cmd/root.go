@@ -24,9 +24,6 @@ var rootCmd = &cobra.Command{
 	files and create commit messages following the Conventional Commits specification.
 	`,
 	TraverseChildren: true,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Welcome to CommitSense!")
-	},
 }
 
 func Execute() {
@@ -34,8 +31,4 @@ func Execute() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-}
-
-func init() {
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
