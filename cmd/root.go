@@ -26,6 +26,7 @@ var rootCmd = &cobra.Command{
 	TraverseChildren: true,
 }
 
+// Execute command for the root command
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
