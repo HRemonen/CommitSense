@@ -8,7 +8,7 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package commit
 
 import (
-	"fmt"
+	"errors"
 	"os"
 	"os/exec"
 	"strings"
@@ -35,7 +35,9 @@ func GetStagedFiles() ([]string, error) {
 		}
 	}
 
-	fmt.Println(stagedFiles)
+	if len(stagedFiles) == 0 {
+		return nil, errors.New("Could not get staged files, is the files added for staging?")
+	}
 	return stagedFiles, nil
 }
 
