@@ -20,7 +20,7 @@ func GetStagedFiles() ([]string, error) {
 	cmd := exec.Command("bash", "-c", statusCmd)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		return nil, err
+		return nil, errors.New("could not get staged files, is the files added for staging?")
 	}
 
 	lines := strings.Split(string(output), "\n")
@@ -35,9 +35,6 @@ func GetStagedFiles() ([]string, error) {
 		}
 	}
 
-	if len(stagedFiles) == 0 {
-		return nil, errors.New("Could not get staged files, is the files added for staging?")
-	}
 	return stagedFiles, nil
 }
 
