@@ -83,9 +83,12 @@ func CreateGitCommit(commitInfo Info, files []string) error {
 
 	commitArgs := append([]string{"commit", "-m", commitMessage}, files...)
 
-	commitGitCmd := exec.Command("git", commitArgs...) //nolint:gosec // because I do not think the users can do anything bad here
-	commitGitCmd.Stdout = os.Stdout
-	commitGitCmd.Stderr = os.Stderr
+	cmd := exec.Command("git", commitArgs...)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 
-	return commitGitCmd.Run()
+	err := cmd.Run()
+
+	return err
 }
