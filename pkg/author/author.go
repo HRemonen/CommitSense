@@ -23,13 +23,13 @@ func getSuggestedAuthorsFromTerminalOutput(output []byte) []*item.Item {
 	authorString = strings.ReplaceAll(authorString, `\n`, "\n")
 
 	// Parse the output to extract author names and email addresses.
-	lines := strings.Split(authorString, "\n")
+	coAuthors := strings.Split(authorString, "\n")
 
 	var suggestedCoAuthors []*item.Item
-	for _, line := range lines {
+	for _, coAuthor := range coAuthors {
 		items := []*item.Item{
 			{
-				ID: line,
+				ID: coAuthor,
 			},
 		}
 		suggestedCoAuthors = append(suggestedCoAuthors, items...)
