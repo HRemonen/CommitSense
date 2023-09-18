@@ -15,12 +15,12 @@ import (
 	"os"
 	"strings"
 
-	p "github.com/c-bata/go-prompt"
+	goprompt "github.com/c-bata/go-prompt"
 	"github.com/manifoldco/promptui"
 )
 
 // PromptCommitType prompts the user to select a commit type.
-func PromptCommitType(prompt prompt.Prompt) (string, error) {
+func PromptCommitType(prompt csprompt.CSPrompt) (string, error) {
 	promptItems := []string{"feat", "fix", "chore", "docs", "style", "refactor", "perf", "test", "build", "ci"}
 
 	promptType := promptui.Select{
@@ -34,7 +34,7 @@ func PromptCommitType(prompt prompt.Prompt) (string, error) {
 }
 
 // PromptForBool prompts the user to enter a boolean value.
-func PromptForBool(prompt prompt.Prompt) (bool, error) {
+func PromptForBool(prompt csprompt.CSPrompt) (bool, error) {
 	promptBool := promptui.Prompt{
 		Label:    prompt.Label,
 		Validate: prompt.Validate,
@@ -50,7 +50,7 @@ func PromptForBool(prompt prompt.Prompt) (bool, error) {
 }
 
 // PromptForString prompts the user to enter a string.
-func PromptForString(prompt prompt.Prompt) (string, error) {
+func PromptForString(prompt csprompt.CSPrompt) (string, error) {
 	promptString := promptui.Prompt{
 		Label:    prompt.Label,
 		Validate: prompt.Validate,
@@ -61,7 +61,7 @@ func PromptForString(prompt prompt.Prompt) (string, error) {
 
 // PromptForMultilineString prompts the user for a multiline string input based on the provided prompt configuration.
 // Users can enter multiple lines of text until they press Enter twice to finish.
-func PromptForMultilineString(prompt prompt.Prompt) (string, error) {
+func PromptForMultilineString(prompt csprompt.CSPrompt) (string, error) {
 	var lines []string
 	for {
 		line, err := PromptForString(prompt)
@@ -92,7 +92,7 @@ func createSelectTemplates() *promptui.SelectTemplates {
 	}
 }
 
-func promptForMultipleItems(prompt prompt.Prompt) ([]*item.Item, error) {
+func promptForMultipleItems(prompt csprompt.CSPrompt) ([]*item.Item, error) {
 	promptItems := prependItemsWithSpecialOptions(prompt.Items)
 
 	promptMultiple := promptui.Select{
@@ -134,16 +134,16 @@ func promptForMultipleItems(prompt prompt.Prompt) ([]*item.Item, error) {
 	return selectedItems, nil
 }
 
-func coAuthorCompleter(suggestedCoAuthors []string) p.Completer { // Use "p" as the alias
-	return func(d p.Document) []p.Suggest {
-		s := []p.Suggest{}
-		t := d.TextBeforeCursor()
+func coAuthorCompleter(suggestedCoAuthors []string) goprompt.Completer { // Use "p" as the alias
+	return func(d goprompt.Document) []goprompt.Suggest {
+		suggestions := []goprompt.Suggest{}
+		text := d.TextBeforeCursor()
 		for _, coAuthor := range suggestedCoAuthors {
-			if strings.HasPrefix(coAuthor, t) {
-				s = append(s, p.Suggest{Text: coAuthor})
+			if strings.HasPrefix(coAuthor, text) {
+				suggestions = append(suggestions, goprompt.Suggest{Text: coAuthor})
 			}
 		}
-		return p.FilterHasPrefix(s, t, true)
+		return goprompt.FilterHasPrefix(suggestions, text, true)
 	}
 }
 
@@ -152,7 +152,7 @@ func coAuthorCompleter(suggestedCoAuthors []string) p.Completer { // Use "p" as 
 // This function provides real-time auto-completion suggestions based on the suggestedCoAuthors
 // list. Users can choose from the suggestions or enter custom co-authors. It returns a slice
 // of selected co-author names.
-func PromptForCoAuthors(prompt prompt.Prompt) ([]string, error) {
+func PromptForCoAuthors(prompt csprompt.CSPrompt) ([]string, error) {
 	suggestedCoAuthors, err := author.GetSuggestedCoAuthors()
 	if err != nil {
 		fmt.Println("Error getting the suggested co-authors:", err)
@@ -162,10 +162,10 @@ func PromptForCoAuthors(prompt prompt.Prompt) ([]string, error) {
 	fmt.Println("Enter Co-authors:")
 	fmt.Println("Press 'Tab' to auto-complete.")
 
-	pr := p.New(
+	pr := goprompt.New(
 		func(_ string) { /* No-op executor */ },
 		coAuthorCompleter(suggestedCoAuthors),
-		p.OptionPrefix(prompt.Label),
+		goprompt.OptionPrefix(prompt.Label),
 	)
 
 	coAuthors := []string{}

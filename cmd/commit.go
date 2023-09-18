@@ -15,7 +15,7 @@ package cmd
 
 import (
 	"commitsense/pkg/commit"
-	"commitsense/pkg/prompt"
+	csprompt "commitsense/pkg/prompt"
 	"commitsense/pkg/validators"
 	"fmt"
 	"os"
@@ -39,7 +39,7 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		commitType, err := commit.PromptCommitType(prompt.Prompt{
+		commitType, err := commit.PromptCommitType(csprompt.CSPrompt{
 			Label: "Select a commit type",
 		})
 		if err != nil {
@@ -47,7 +47,7 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		commitScope, err := commit.PromptForString(prompt.Prompt{
+		commitScope, err := commit.PromptForString(csprompt.CSPrompt{
 			Label: "Enter a commit scope (optional)",
 		})
 		if err != nil {
@@ -55,7 +55,7 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		commitDescription, err := commit.PromptForString(prompt.Prompt{
+		commitDescription, err := commit.PromptForString(csprompt.CSPrompt{
 			Label:    "Enter a brief commit description",
 			Validate: validators.ValidateStringNotEmpty,
 		})
@@ -64,7 +64,7 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		commitBody, err := commit.PromptForMultilineString(prompt.Prompt{
+		commitBody, err := commit.PromptForMultilineString(csprompt.CSPrompt{
 			Label: "Enter a detailed commit body (press Enter twice to finish)",
 		})
 		if err != nil {
@@ -74,7 +74,7 @@ var commitCmd = &cobra.Command{
 
 		var coAuthors []string
 		if isCoAuthored {
-			coAuthors, err = commit.PromptForCoAuthors(prompt.Prompt{
+			coAuthors, err = commit.PromptForCoAuthors(csprompt.CSPrompt{
 				Label: "Enter Co-Author information ",
 			})
 			if err != nil {
@@ -85,7 +85,7 @@ var commitCmd = &cobra.Command{
 
 		var breakingChangeDescription string
 		if isBreakingChange {
-			breakingChangeDescription, err = commit.PromptForString(prompt.Prompt{
+			breakingChangeDescription, err = commit.PromptForString(csprompt.CSPrompt{
 				Label: "Enter a description of the breaking change",
 			})
 			if err != nil {
