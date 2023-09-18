@@ -9,21 +9,16 @@ package commit
 
 import (
 	"errors"
-	"os"
+	"fmt"
 	"os/exec"
 	"strings"
 )
 
-// GetStagedFiles returns a list of staged files.
-func GetStagedFiles() ([]string, error) {
-	statusCmd := "git status --porcelain --untracked-files=all | grep '^[A|C|M|D|R]'"
-	cmd := exec.Command("bash", "-c", statusCmd)
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		return nil, errors.New("could not get staged files, is the files added for staging?")
-	}
+// getStringsFromTerminalOutput takes the os/exec functions returned byte array
+// and transforms the bytes into an array of lines
+func getStringsFromTerminalOutput(terminalOutput []byte) []string {
+	lines := strings.Split(string(terminalOutput), "\n")
 
-	lines := strings.Split(string(output), "\n")
 	var stagedFiles []string
 	for _, line := range lines {
 		// Strip leading and trailing whitespace
@@ -34,6 +29,20 @@ func GetStagedFiles() ([]string, error) {
 			stagedFiles = append(stagedFiles, parts[1])
 		}
 	}
+
+	return stagedFiles
+}
+
+// GetStagedFiles returns a list of staged files.
+func GetStagedFiles() ([]string, error) {
+	statusCmd := "git status --porcelain --untracked-files=all | grep '^[A|C|M|D|R]'"
+	cmd := exec.Command("bash", "-c", statusCmd)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return nil, errors.New("could not get staged files, is the files added for staging?")
+	}
+
+	stagedFiles := getStringsFromTerminalOutput(output)
 
 	return stagedFiles, nil
 }
@@ -84,11 +93,15 @@ func CreateGitCommit(commitInfo Info, files []string) error {
 	commitArgs := append([]string{"commit", "-m", commitMessage}, files...)
 
 	cmd := exec.Command("git", commitArgs...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	output, err := cmd.CombinedOutput()
 
-	err := cmd.Run()
+	if err != nil {
+		return errors.New("something went wrong creating the commit")
+	}
+
+	fmt.Println(output)
+
+	err = cmd.Run()
 
 	return err
 }
