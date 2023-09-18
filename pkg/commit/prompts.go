@@ -69,62 +69,61 @@ func PromptForMultilineString(prompt prompt.Prompt) (string, error) {
 }
 
 // Append the prompt.Items with the continue item
-func appendMultiplePromptWithContinue(allItems []*item.Item) []*item.Item {
+func appendMultiplePromptWithContinue(items []*item.Item) []*item.Item {
 	const continueItem = "Continue"
-
-	if len(allItems) > 0 && allItems[0].ID != continueItem {
-		items := []*item.Item{
-			{
-				ID: continueItem,
-			},
-		}
-
-		allItems = append(items, allItems...)
+	if len(items) > 0 && items[0].ID != continueItem {
+		items = append([]*item.Item{{ID: continueItem}}, items...)
 	}
-
-	return allItems
+	return items
 }
 
-func promptForMultiple(prompt prompt.Prompt) ([]*item.Item, error) {
-	allItems := appendMultiplePromptWithContinue(prompt.Items)
-
-	templates := &promptui.SelectTemplates{
+func createSelectTemplates() *promptui.SelectTemplates {
+	return &promptui.SelectTemplates{
 		Label:    "{{ . }}?",
 		Active:   "→ {{if .IsSelected}}✔ {{end}} {{ .ID | cyan }}",
 		Inactive: "{{if .IsSelected }}✔ {{ .ID | green }} {{else}}{{ .ID | faint }}{{end}} ",
 	}
+}
+
+func promptForMultiple(prompt prompt.Prompt) ([]*item.Item, error) {
+	promptItems := appendMultiplePromptWithContinue(prompt.Items)
 
 	promptMultiple := promptui.Select{
 		Label:        prompt.Label,
-		Items:        allItems,
-		Templates:    templates,
+		Items:        promptItems,
+		Templates:    createSelectTemplates(),
 		Size:         10,
 		CursorPos:    prompt.CursorPos,
 		HideSelected: true,
 	}
 
-	selectionIdx, _, err := promptMultiple.Run()
-	if err != nil {
-		return nil, fmt.Errorf("prompt failed: %w", err)
-	}
+	var selectedItems []*item.Item
 
-	chosenItem := allItems[selectionIdx]
+	for {
+		selectionIdx, _, err := promptMultiple.Run()
+		if err != nil {
+			return nil, fmt.Errorf("prompt failed: %w", err)
+		}
 
-	if chosenItem.ID != "Continue" {
+		chosenItem := promptItems[selectionIdx]
+
+		if chosenItem.ID == "Continue" {
+			break
+		} 
+
 		// If the user selected something other than "Continue",
-		// toggle selection on this item and run the function again.
+		// toggle selection on this item.
 		chosenItem.IsSelected = !chosenItem.IsSelected
 		prompt.CursorPos = selectionIdx
-
-		return promptForMultiple(prompt)
 	}
 
-	var selectedItems []*item.Item
-	for _, item := range allItems {
+	// Collect selected items.
+	for _, item := range promptItems {
 		if item.IsSelected {
 			selectedItems = append(selectedItems, item)
 		}
 	}
+
 	return selectedItems, nil
 }
 
