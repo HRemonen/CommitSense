@@ -8,11 +8,10 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package commit
 
 import (
-	"fmt"
-	"strings"
-
 	"commitsense/pkg/item"
 	"commitsense/pkg/prompt"
+	"fmt"
+	"strings"
 
 	"github.com/manifoldco/promptui"
 )
