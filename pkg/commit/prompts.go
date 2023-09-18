@@ -68,9 +68,9 @@ func PromptForMultilineString(prompt prompt.Prompt) (string, error) {
 	return strings.Join(lines, "\n"), nil
 }
 
-func promptForMultiple(prompt prompt.Prompt) ([]*item.Item, error) {
+// Append the prompt.Items with the continue item
+func appendMultiplePromptWithContinue(allItems []*item.Item) []*item.Item {
 	const continueItem = "Continue"
-	allItems := prompt.Items
 
 	if len(allItems) > 0 && allItems[0].ID != continueItem {
 		items := []*item.Item{
@@ -81,6 +81,12 @@ func promptForMultiple(prompt prompt.Prompt) ([]*item.Item, error) {
 
 		allItems = append(items, allItems...)
 	}
+
+	return allItems
+}
+
+func promptForMultiple(prompt prompt.Prompt) ([]*item.Item, error) {
+	allItems := appendMultiplePromptWithContinue(prompt.Items)
 
 	templates := &promptui.SelectTemplates{
 		Label:    "{{ . }}?",
@@ -109,13 +115,14 @@ func promptForMultiple(prompt prompt.Prompt) ([]*item.Item, error) {
 		// toggle selection on this item and run the function again.
 		chosenItem.IsSelected = !chosenItem.IsSelected
 		prompt.CursorPos = selectionIdx
+
 		return promptForMultiple(prompt)
 	}
 
 	var selectedItems []*item.Item
-	for _, i := range allItems {
-		if i.IsSelected {
-			selectedItems = append(selectedItems, i)
+	for _, item := range allItems {
+		if item.IsSelected {
+			selectedItems = append(selectedItems, item)
 		}
 	}
 	return selectedItems, nil
