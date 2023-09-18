@@ -16,8 +16,8 @@ import (
 
 // getStringsFromTerminalOutput takes the os/exec functions returned byte array
 // and transforms the bytes into an array of lines
-func getStringsFromTerminalOutput(terminalOutput []byte) []string {
-	lines := strings.Split(string(terminalOutput), "\n")
+func getStagedFilesFromTerminalOutput(output []byte) []string {
+	lines := strings.Split(string(output), "\n")
 
 	var stagedFiles []string
 	for _, line := range lines {
@@ -42,7 +42,7 @@ func GetStagedFiles() ([]string, error) {
 		return nil, errors.New("could not get staged files, is the files added for staging?")
 	}
 
-	stagedFiles := getStringsFromTerminalOutput(output)
+	stagedFiles := getStagedFilesFromTerminalOutput(output)
 
 	return stagedFiles, nil
 }
