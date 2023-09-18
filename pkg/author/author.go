@@ -13,9 +13,10 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package author
 
 import (
-	"commitsense/pkg/item"
 	"os/exec"
 	"strings"
+
+	"commitsense/pkg/item"
 )
 
 func getSuggestedAuthorsFromTerminalOutput(output []byte) []*item.Item {

@@ -14,12 +14,13 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package cmd
 
 import (
+	"fmt"
+	"os"
+
 	"commitsense/pkg/author"
 	"commitsense/pkg/commit"
 	"commitsense/pkg/prompt"
 	"commitsense/pkg/validators"
-	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
 )

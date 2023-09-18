@@ -8,10 +8,11 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package commit
 
 import (
-	"commitsense/pkg/item"
-	"commitsense/pkg/prompt"
 	"fmt"
 	"strings"
+
+	"commitsense/pkg/item"
+	"commitsense/pkg/prompt"
 
 	"github.com/manifoldco/promptui"
 )
@@ -109,7 +110,7 @@ func promptForMultiple(prompt prompt.Prompt) ([]*item.Item, error) {
 
 		if chosenItem.ID == "Continue" {
 			break
-		} 
+		}
 
 		// If the user selected something other than "Continue",
 		// toggle selection on this item.
