@@ -13,27 +13,16 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package author
 
 import (
-	"commitsense/pkg/item"
 	"os/exec"
 	"strings"
 )
 
-func getSuggestedAuthorsFromTerminalOutput(output []byte) []*item.Item {
+func getSuggestedAuthorsFromTerminalOutput(output []byte) []string {
 	authorString := strings.TrimSpace(string(output))
 	authorString = strings.ReplaceAll(authorString, `\n`, "\n")
 
 	// Parse the output to extract author names and email addresses.
-	coAuthors := strings.Split(authorString, "\n")
-
-	var suggestedCoAuthors []*item.Item
-	for _, coAuthor := range coAuthors {
-		items := []*item.Item{
-			{
-				ID: coAuthor,
-			},
-		}
-		suggestedCoAuthors = append(suggestedCoAuthors, items...)
-	}
+	suggestedCoAuthors := strings.Split(authorString, "\n")
 
 	return suggestedCoAuthors
 }
@@ -43,7 +32,7 @@ func getSuggestedAuthorsFromTerminalOutput(output []byte) []*item.Item {
 // This function uses the `git log` command to obtain a list of authors who have made commits in the Git repository.
 // It executes the command and processes the output to extract author names and email addresses. The resulting
 // list represents suggested co-authors for Git commits.
-func GetSuggestedCoAuthors() ([]*item.Item, error) {
+func GetSuggestedCoAuthors() ([]string, error) {
 	// Use the `git rev-list` command to obtain a list of authors who have made commits in the Git repository.
 	revlist := "git log --pretty='%an <%ae>' | sort -u"
 	cmd := exec.Command("bash", "-c", revlist)

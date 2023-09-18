@@ -14,7 +14,6 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package cmd
 
 import (
-	"commitsense/pkg/author"
 	"commitsense/pkg/commit"
 	"commitsense/pkg/prompt"
 	"commitsense/pkg/validators"
@@ -40,7 +39,9 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		commitType, err := commit.PromptCommitType()
+		commitType, err := commit.PromptCommitType(prompt.Prompt{
+			Label: "Select a commit type",
+		})
 		if err != nil {
 			fmt.Println("Error prompting for the commit type: ", err)
 			os.Exit(1)
@@ -73,16 +74,8 @@ var commitCmd = &cobra.Command{
 
 		var coAuthors []string
 		if isCoAuthored {
-			suggestedCoAuthors, err := author.GetSuggestedCoAuthors()
-			if err != nil {
-				fmt.Println("Error getting the suggested co-authors:", err)
-				os.Exit(1)
-			}
-
 			coAuthors, err = commit.PromptForCoAuthors(prompt.Prompt{
-				Label:     "Select authors that are involded",
-				Items:     suggestedCoAuthors,
-				CursorPos: 0,
+				Label: "Enter Co-Author information ",
 			})
 			if err != nil {
 				fmt.Println("Error prompting for the co-authors:", err)
@@ -116,6 +109,9 @@ var commitCmd = &cobra.Command{
 			fmt.Println("Error creating commit:", err)
 			os.Exit(1)
 		}
+
+		/* fmt.Println(stagedFiles)
+		fmt.Println(commitInfo) */
 	},
 }
 

@@ -8,21 +8,28 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package commit
 
 import (
+	"commitsense/pkg/author"
 	"commitsense/pkg/item"
 	"commitsense/pkg/prompt"
 	"fmt"
+	"os"
 	"strings"
 
+	p "github.com/c-bata/go-prompt"
 	"github.com/manifoldco/promptui"
 )
 
 // PromptCommitType prompts the user to select a commit type.
-func PromptCommitType() (string, error) {
+func PromptCommitType(prompt prompt.Prompt) (string, error) {
+	promptItems := []string{"feat", "fix", "chore", "docs", "style", "refactor", "perf", "test", "build", "ci"}
+
 	promptType := promptui.Select{
-		Label: "Select a commit type",
-		Items: []string{"feat", "fix", "chore", "docs", "style", "refactor", "perf", "test", "build", "ci"},
+		Label: prompt.Label,
+		Items: promptItems,
 	}
+
 	_, typeResult, err := promptType.Run()
+
 	return typeResult, err
 }
 
@@ -68,12 +75,12 @@ func PromptForMultilineString(prompt prompt.Prompt) (string, error) {
 	return strings.Join(lines, "\n"), nil
 }
 
-// Append the prompt.Items with the continue item
-func appendMultiplePromptWithContinue(items []*item.Item) []*item.Item {
-	const continueItem = "Continue"
-	if len(items) > 0 && items[0].ID != continueItem {
-		items = append([]*item.Item{{ID: continueItem}}, items...)
-	}
+// Prepend the prompt.Items with the continue item
+func prependItemsWithSpecialOptions(items []*item.Item) []*item.Item {
+	continueItem := &item.Item{ID: "Continue"}
+
+	items = append([]*item.Item{continueItem}, items...)
+
 	return items
 }
 
@@ -85,8 +92,8 @@ func createSelectTemplates() *promptui.SelectTemplates {
 	}
 }
 
-func promptForMultiple(prompt prompt.Prompt) ([]*item.Item, error) {
-	promptItems := appendMultiplePromptWithContinue(prompt.Items)
+func promptForMultipleItems(prompt prompt.Prompt) ([]*item.Item, error) {
+	promptItems := prependItemsWithSpecialOptions(prompt.Items)
 
 	promptMultiple := promptui.Select{
 		Label:        prompt.Label,
@@ -105,7 +112,7 @@ func promptForMultiple(prompt prompt.Prompt) ([]*item.Item, error) {
 			return nil, fmt.Errorf("prompt failed: %w", err)
 		}
 
-		chosenItem := promptItems[selectionIdx]
+		chosenItem := prompt.Items[selectionIdx]
 
 		if chosenItem.ID == "Continue" {
 			break
@@ -118,7 +125,7 @@ func promptForMultiple(prompt prompt.Prompt) ([]*item.Item, error) {
 	}
 
 	// Collect selected items.
-	for _, item := range promptItems {
+	for _, item := range prompt.Items {
 		if item.IsSelected {
 			selectedItems = append(selectedItems, item)
 		}
@@ -127,21 +134,48 @@ func promptForMultiple(prompt prompt.Prompt) ([]*item.Item, error) {
 	return selectedItems, nil
 }
 
-// PromptForCoAuthors displays a prompt to select or enter co-authors for a Git commit.
+func coAuthorCompleter(suggestedCoAuthors []string) p.Completer { // Use "p" as the alias
+	return func(d p.Document) []p.Suggest {
+		s := []p.Suggest{}
+		t := d.TextBeforeCursor()
+		for _, coAuthor := range suggestedCoAuthors {
+			if strings.HasPrefix(coAuthor, t) {
+				s = append(s, p.Suggest{Text: coAuthor})
+			}
+		}
+		return p.FilterHasPrefix(s, t, true)
+	}
+}
+
+// PromptForCoAuthors displays a prompt to enter co-author names for a Git commit.
 //
-// This function retrieves a list of suggested co-authors using the GetSuggestedCoAuthors function
-// from the author package. It then presents the user with a selectable list of suggested co-authors
-// and allows them to choose from the suggestions or enter custom co-authors.
+// This function provides real-time auto-completion suggestions based on the suggestedCoAuthors
+// list. Users can choose from the suggestions or enter custom co-authors. It returns a slice
+// of selected co-author names.
 func PromptForCoAuthors(prompt prompt.Prompt) ([]string, error) {
-	selectedAuthorPtrs, err := promptForMultiple(prompt)
+	suggestedCoAuthors, err := author.GetSuggestedCoAuthors()
 	if err != nil {
-		return nil, err
+		fmt.Println("Error getting the suggested co-authors:", err)
+		os.Exit(1)
 	}
 
-	var authorResult []string
-	for _, file := range selectedAuthorPtrs {
-		authorResult = append(authorResult, file.ID)
+	fmt.Println("Enter Co-authors:")
+	fmt.Println("Press 'Tab' to auto-complete.")
+
+	pr := p.New(
+		func(_ string) { /* No-op executor */ },
+		coAuthorCompleter(suggestedCoAuthors),
+		p.OptionPrefix(prompt.Label),
+	)
+
+	coAuthors := []string{}
+	for {
+		coAuthor := pr.Input()
+		if coAuthor == "" {
+			break
+		}
+		coAuthors = append(coAuthors, coAuthor)
 	}
 
-	return authorResult, nil
+	return coAuthors, nil
 }
