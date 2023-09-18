@@ -23,4 +23,3 @@ type CSPrompt struct {
 	Validate  func(string) error
 	Default   string
 }
-

@@ -15,10 +15,11 @@ package cmd
 
 import (
 	"commitsense/pkg/commit"
-	csprompt "commitsense/pkg/prompt"
 	"commitsense/pkg/validators"
 	"fmt"
 	"os"
+
+	csprompt "commitsense/pkg/prompt"
 
 	"github.com/spf13/cobra"
 )
