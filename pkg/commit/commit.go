@@ -9,7 +9,7 @@ package commit
 
 import (
 	"errors"
-	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 )
@@ -92,16 +92,9 @@ func CreateGitCommit(commitInfo Info, files []string) error {
 
 	commitArgs := append([]string{"commit", "-m", commitMessage}, files...)
 
-	cmd := exec.Command("git", commitArgs...)
-	output, err := cmd.CombinedOutput()
+	commitGitCmd := exec.Command("git", commitArgs...) //nolint:gosec // because I do not think the users can do anything bad here
+	commitGitCmd.Stdout = os.Stdout
+	commitGitCmd.Stderr = os.Stderr
 
-	if err != nil {
-		return errors.New("something went wrong creating the commit")
-	}
-
-	fmt.Println(output)
-
-	err = cmd.Run()
-
-	return err
+	return commitGitCmd.Run()
 }
