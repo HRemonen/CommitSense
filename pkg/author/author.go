@@ -18,22 +18,8 @@ import (
 	"strings"
 )
 
-// GetSuggestedCoAuthors retrieves a list of suggested co-authors who have made commits in the Git repository.
-//
-// This function uses the `git log` command to obtain a list of authors who have made commits in the Git repository.
-// It executes the command and processes the output to extract author names and email addresses. The resulting
-// list represents suggested co-authors for Git commits.
-func GetSuggestedCoAuthors() ([]*item.Item, error) {
-	// Use the `git rev-list` command to obtain a list of authors who have made commits in the Git repository.
-	revlist := "git log --pretty='%an <%ae>' | sort -u"
-	cmd := exec.Command("bash", "-c", revlist)
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		return nil, err
-	}
-
+func getSuggestedAuthorsFromTerminalOutput(output []byte) []*item.Item {
 	authorString := strings.TrimSpace(string(output))
-
 	authorString = strings.ReplaceAll(authorString, `\n`, "\n")
 
 	// Parse the output to extract author names and email addresses.
@@ -48,6 +34,25 @@ func GetSuggestedCoAuthors() ([]*item.Item, error) {
 		}
 		suggestedCoAuthors = append(suggestedCoAuthors, items...)
 	}
+
+	return suggestedCoAuthors
+}
+
+// GetSuggestedCoAuthors retrieves a list of suggested co-authors who have made commits in the Git repository.
+//
+// This function uses the `git log` command to obtain a list of authors who have made commits in the Git repository.
+// It executes the command and processes the output to extract author names and email addresses. The resulting
+// list represents suggested co-authors for Git commits.
+func GetSuggestedCoAuthors() ([]*item.Item, error) {
+	// Use the `git rev-list` command to obtain a list of authors who have made commits in the Git repository.
+	revlist := "git log --pretty='%an <%ae>' | sort -u"
+	cmd := exec.Command("bash", "-c", revlist)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return nil, err
+	}
+
+	suggestedCoAuthors := getSuggestedAuthorsFromTerminalOutput(output)
 
 	return suggestedCoAuthors, nil
 }
