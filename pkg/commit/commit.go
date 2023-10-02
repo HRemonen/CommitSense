@@ -66,10 +66,11 @@ func createCommitMessage(commitInfo Info) string {
 		commitMessage += "\n\n" + commitInfo.CommitBody
 	}
 
-	if commitInfo.CommitType == "docs" {
+	// TODO: ADD configurable option for adding [skip ci] to commit message on docs commits
+	/* if commitInfo.CommitType == "docs" {
 		commitMessage += "\n"
 		commitMessage += "\n[skip ci]"
-	}
+	} */
 
 	if commitInfo.IsBreakingChange {
 		commitMessage += "\n"
