@@ -1,3 +1,10 @@
+/*
+Package config provides functionality for reading, creating and modifying configuration files for CommitSense.
+
+This file includes utility functions for interacting with configuration files.
+
+Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
+*/
 package config
 
 import (
@@ -8,6 +15,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// UserHomeDir represents the path to the user's home directory.
 var UserHomeDir string
 
 var (
@@ -32,8 +40,8 @@ func init() {
 	UserHomeDir = homeDir
 }
 
-// ConfigFileExists checks if the configuration file exists in the user's home directory.
-func ConfigFileExists() bool {
+// Exists checks if the configuration file exists in the user's home directory.
+func Exists() bool {
 	if fi, err := os.Stat(path.Join(UserHomeDir, configFile)); err != nil || fi.IsDir() {
 		return false
 	}
@@ -71,4 +79,4 @@ func CreateDefaultConfig() error {
 		CommitTypes: defaultCommitTypes,
 		SkipCITypes: defaultSkipCITypes,
 	})
-} 
+}
