@@ -95,7 +95,7 @@ var commitCmd = &cobra.Command{
 			}
 		}
 
-		commitInfo := commit.Info{
+		commitInfo := commit.Commit{
 			CommitType:                commitType,
 			CommitScope:               commitScope,
 			CommitDescription:         commitDescription,

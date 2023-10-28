@@ -14,6 +14,17 @@ import (
 	"strings"
 )
 
+type Commit struct {
+	CommitType                string
+	CommitScope               string
+	CommitDescription         string
+	CommitBody                string
+	IsCoAuthored              bool
+	CoAuthors                 []string
+	IsBreakingChange          bool
+	BreakingChangeDescription string
+}
+
 // getStringsFromTerminalOutput takes the os/exec functions returned byte array
 // and transforms the bytes into an array of lines
 func getStagedFilesFromTerminalOutput(output []byte) []string {
@@ -48,38 +59,38 @@ func GetStagedFiles() ([]string, error) {
 }
 
 // CreateCommitMessage creates a commit message in the Conventional Commits format.
-func createCommitMessage(commitInfo Info) string {
+func createCommitMessage(commit Commit) string {
 	var commitMessage string
-	commitMessage = commitInfo.CommitType
+	commitMessage = commit.CommitType
 
-	if commitInfo.CommitScope != "" {
-		commitMessage += "(" + commitInfo.CommitScope + ")"
+	if commit.CommitScope != "" {
+		commitMessage += "(" + commit.CommitScope + ")"
 	}
 
-	if commitInfo.IsBreakingChange {
+	if commit.IsBreakingChange {
 		commitMessage += "!"
 	}
 
-	commitMessage += ": " + commitInfo.CommitDescription
+	commitMessage += ": " + commit.CommitDescription
 
-	if commitInfo.CommitBody != "" {
-		commitMessage += "\n\n" + commitInfo.CommitBody
+	if commit.CommitBody != "" {
+		commitMessage += "\n\n" + commit.CommitBody
 	}
 
 	// TODO: ADD configurable option for adding [skip ci] to commit message on docs commits
-	/* if commitInfo.CommitType == "docs" {
+	/* if commit.CommitType == "docs" {
 		commitMessage += "\n"
 		commitMessage += "\n[skip ci]"
 	} */
 
-	if commitInfo.IsBreakingChange {
+	if commit.IsBreakingChange {
 		commitMessage += "\n"
-		commitMessage += "\nBREAKING CHANGE: " + commitInfo.BreakingChangeDescription
+		commitMessage += "\nBREAKING CHANGE: " + commit.BreakingChangeDescription
 	}
 
-	if commitInfo.IsCoAuthored {
+	if commit.IsCoAuthored {
 		commitMessage += "\n"
-		for _, coauth := range commitInfo.CoAuthors {
+		for _, coauth := range commit.CoAuthors {
 			commitMessage += "\nCo-authored-by: " + coauth
 		}
 	}
@@ -88,8 +99,8 @@ func createCommitMessage(commitInfo Info) string {
 }
 
 // CreateGitCommit creates a Git commit with the given message and files.
-func CreateGitCommit(commitInfo Info, files []string) error {
-	commitMessage := createCommitMessage(commitInfo)
+func CreateGitCommit(commit Commit, files []string) error {
+	commitMessage := createCommitMessage(commit)
 
 	commitArgs := append([]string{"commit", "-m", commitMessage}, files...)
 
