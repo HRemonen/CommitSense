@@ -14,6 +14,7 @@ import (
 	"strings"
 )
 
+// Commit represents information needed for creating a Git commit.
 type Commit struct {
 	CommitType                string
 	CommitScope               string
