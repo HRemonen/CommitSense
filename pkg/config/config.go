@@ -19,15 +19,15 @@ import (
 var UserHomeDir string
 
 var (
-	configFile         = "commitsense.toml"
+	configFile         = ".commitsense.yaml"
 	defaultCommitTypes = []string{"feat", "fix", "chore", "docs", "style", "refactor", "perf", "test", "build", "ci"}
 	defaultSkipCITypes = []string{"docs"}
 )
 
 // Config represents the configuration settings for the application.
 type Config struct {
-	CommitTypes []string `toml:"commit_types"`
-	SkipCITypes []string `toml:"skip_ci_types"`
+	CommitTypes []string `yaml:"commit_types"`
+	SkipCITypes []string `yaml:"skip_ci_types"`
 }
 
 func init() {
@@ -50,12 +50,21 @@ func Exists() bool {
 
 // ReadConfigFile reads the configuration file from the user's home directory.
 func ReadConfigFile() (*Config, error) {
-	viper.SetConfigFile(path.Join(UserHomeDir, configFile))
-	viper.SetConfigType("toml")
-	err := viper.ReadInConfig()
-	if err != nil {
-		return nil, err
+	viper.AddConfigPath(UserHomeDir)
+	viper.SetConfigType("yaml")
+	viper.SetConfigName(configFile)
+
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			fmt.Println("Error config file not found: ", err)
+			os.Exit(1)
+		}
+		// Config file was found but another error was produced
+		fmt.Println("Error reading config file: ", err)
+		os.Exit(1)
 	}
+
+	fmt.Println("Using config file: ", viper.ConfigFileUsed())
 
 	return &Config{
 		CommitTypes: viper.GetStringSlice("commit_types"),
@@ -66,7 +75,7 @@ func ReadConfigFile() (*Config, error) {
 // WriteConfigFile writes the configuration file to the user's home directory.
 func WriteConfigFile(config *Config) error {
 	viper.SetConfigFile(path.Join(UserHomeDir, configFile))
-	viper.SetConfigType("toml")
+	viper.SetConfigType("yaml")
 	viper.Set("commit_types", config.CommitTypes)
 	viper.Set("skip_ci_types", config.SkipCITypes)
 
