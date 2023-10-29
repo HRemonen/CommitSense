@@ -10,7 +10,6 @@ package config
 import (
 	"fmt"
 	"os"
-	"path"
 
 	"github.com/spf13/viper"
 )
@@ -42,7 +41,7 @@ func init() {
 
 // Exists checks if the configuration file exists in the user's home directory.
 func Exists() bool {
-	if fi, err := os.Stat(path.Join(UserHomeDir, configFile)); err != nil || fi.IsDir() {
+	if fi, err := os.Stat(configFile); err != nil || fi.IsDir() {
 		return false
 	}
 	return true

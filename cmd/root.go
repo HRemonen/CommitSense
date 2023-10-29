@@ -12,7 +12,6 @@ package cmd
 import (
 	"commitsense/pkg/config"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 
@@ -27,7 +26,13 @@ var (
 	setConfig   bool
 )
 
-var validArgs = []string{"add", "commit"}
+var (
+	validArgs    = []string{"add", "commit"}
+	successColor = color.New(color.FgGreen).Add(color.Bold)
+	infoColor    = color.New(color.FgCyan).Add(color.Bold)
+	errorColor   = color.New(color.FgRed).Add(color.Bold)
+	boldColor    = color.New(color.Bold)
+)
 
 var rootCmd = &cobra.Command{
 	Use:   "commitsense",
@@ -47,9 +52,10 @@ files and create commit messages following the Conventional Commits specificatio
 			if err != nil {
 				return err
 			}
-			fmt.Println("Could not find an existing configuration file")
-			fmt.Println("Created default configuration file at ~/.commitsense.yaml")
+			infoColor.Println("\nCould not find an existing configuration file")
+			successColor.Println("Created default configuration file at ~/.commitsense.yaml")
 		}
+
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -77,22 +83,18 @@ func Execute() {
 }
 
 func showConfigSettings() error {
-	highlight := color.New(color.FgGreen).Add(color.Bold)
-	bold := color.New(color.Bold)
-
-	highlight.Println("\n\nShowing current configuration settings")
+	successColor.Println("\n\nShowing current configuration settings")
 
 	config, err := config.ReadConfigFile()
 	if err != nil {
-		errorColor := color.New(color.FgRed).Add(color.Bold)
 		errorColor.Printf("Error reading configuration file: %s\n", err)
 		return err
 	}
 
-	bold.Println("\nAllowed commit types:")
+	boldColor.Println("\nAllowed commit types:")
 	printYAML(config.CommitTypes)
 
-	bold.Println("Skipping CI on types:")
+	boldColor.Println("Skipping CI on types:")
 	printYAML(config.SkipCITypes)
 
 	return nil
@@ -101,7 +103,7 @@ func showConfigSettings() error {
 func printYAML(data interface{}) {
 	yamlData, err := yaml.Marshal(data)
 	if err != nil {
-		log.Printf("Error printing YAML: %v", err)
+		errorColor.Printf("Error printing YAML: %v", err)
 		return
 	}
 
