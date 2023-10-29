@@ -19,11 +19,10 @@ import (
 )
 
 // UserHomeDir represents the path to the user's home directory.
+var UserHomeDir string
+
 // ApplicationConfig represents the configuration settings for the application.
-var (
-	UserHomeDir       string
-	ApplicationConfig *Config
-)
+var ApplicationConfig *Config
 
 var (
 	configFile         = ".commitsense.yaml"
