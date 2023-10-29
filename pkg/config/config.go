@@ -8,11 +8,14 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package config
 
 import (
+	"fmt"
 	"os"
+	"strings"
 
 	colorprinter "commitsense/pkg/printer"
 
 	"github.com/spf13/viper"
+	"gopkg.in/yaml.v3"
 )
 
 // UserHomeDir represents the path to the user's home directory.
@@ -96,4 +99,33 @@ func CreateDefaultConfig() error {
 		CommitTypes: defaultCommitTypes,
 		SkipCITypes: defaultSkipCITypes,
 	})
+}
+
+// ShowConfigSettings prints out the current configuration settings.
+func ShowConfigSettings() error {
+	colorprinter.ColorPrint("success", "\nShowing current configuration settings")
+	config := ApplicationConfig
+
+	colorprinter.ColorPrint("info", "Using configuration file: %v", configFile)
+
+	colorprinter.ColorPrint("bold", "\nAllowed commit types:")
+	printYAML(config.CommitTypes)
+
+	colorprinter.ColorPrint("bold", "Skipping CI on types:")
+	printYAML(config.SkipCITypes)
+
+	return nil
+}
+
+func printYAML(data interface{}) {
+	yamlData, err := yaml.Marshal(data)
+	if err != nil {
+		colorprinter.ColorPrint("error", "Error printing YAML: %v", err)
+
+		return
+	}
+
+	// Use strings.Replace to add proper indentation
+	indentedYAML := strings.ReplaceAll(string(yamlData), "\n", "\n  ")
+	fmt.Println("  " + indentedYAML)
 }

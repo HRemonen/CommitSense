@@ -11,14 +11,11 @@ package cmd
 
 import (
 	"commitsense/pkg/config"
-	"fmt"
 	"os"
-	"strings"
 
 	colorprinter "commitsense/pkg/printer"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v3"
 )
 
 var (
@@ -54,7 +51,7 @@ files and create commit messages following the Conventional Commits specificatio
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if showConfig {
-			return showConfigSettings()
+			return config.ShowConfigSettings()
 		}
 
 		return cmd.Help()
@@ -75,36 +72,4 @@ func Execute() {
 
 		os.Exit(1)
 	}
-}
-
-func showConfigSettings() error {
-	colorprinter.ColorPrint("success", "\nShowing current configuration settings")
-
-	config, err := config.ReadConfigFile()
-	if err != nil {
-		colorprinter.ColorPrint("error", "Error reading configuration file: %v", err)
-
-		return err
-	}
-
-	colorprinter.ColorPrint("bold", "\nAllowed commit types:")
-	printYAML(config.CommitTypes)
-
-	colorprinter.ColorPrint("bold", "Skipping CI on types:")
-	printYAML(config.SkipCITypes)
-
-	return nil
-}
-
-func printYAML(data interface{}) {
-	yamlData, err := yaml.Marshal(data)
-	if err != nil {
-		colorprinter.ColorPrint("error", "Error printing YAML: %v", err)
-
-		return
-	}
-
-	// Use strings.Replace to add proper indentation
-	indentedYAML := strings.ReplaceAll(string(yamlData), "\n", "\n  ")
-	fmt.Println("  " + indentedYAML)
 }
