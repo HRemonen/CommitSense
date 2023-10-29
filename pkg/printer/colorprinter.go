@@ -1,3 +1,10 @@
+/*
+Package colorprinter provides functionality for printing colored stdout messages for CommitSense.
+
+This file includes utility functions for interacting with colored stdout messages.
+
+Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
+*/
 package colorprinter
 
 import (
@@ -11,6 +18,7 @@ var (
 	boldColor    = color.New(color.Bold)
 )
 
+// ColorPrint prints out a colored messaged according to the variant given as parameter.
 func ColorPrint(variant string, text string) {
 	var printer *color.Color
 
