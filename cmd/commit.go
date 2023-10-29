@@ -110,9 +110,6 @@ var commitCmd = &cobra.Command{
 			fmt.Println("Error creating commit:", err)
 			os.Exit(1)
 		}
-
-		/* fmt.Println(stagedFiles)
-		fmt.Println(commitInfo) */
 	},
 }
 
