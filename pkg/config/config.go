@@ -50,9 +50,8 @@ func Exists() bool {
 
 // ReadConfigFile reads the configuration file from the user's home directory.
 func ReadConfigFile() (*Config, error) {
+	viper.SetConfigFile(configFile)
 	viper.AddConfigPath(UserHomeDir)
-	viper.SetConfigType("yaml")
-	viper.SetConfigName(configFile)
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
