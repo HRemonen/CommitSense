@@ -11,11 +11,11 @@ package cmd
 
 import (
 	"commitsense/pkg/config"
+	colorprinter "commitsense/pkg/printer"
 	"fmt"
 	"os"
 	"strings"
 
-	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
 )
@@ -24,14 +24,7 @@ var (
 	showVersion bool
 	showConfig  bool
 	setConfig   bool
-)
-
-var (
-	validArgs    = []string{"add", "commit"}
-	successColor = color.New(color.FgGreen).Add(color.Bold)
-	infoColor    = color.New(color.FgCyan).Add(color.Bold)
-	errorColor   = color.New(color.FgRed).Add(color.Bold)
-	boldColor    = color.New(color.Bold)
+	validArgs   = []string{"add", "commit"}
 )
 
 var rootCmd = &cobra.Command{
@@ -52,8 +45,8 @@ files and create commit messages following the Conventional Commits specificatio
 			if err != nil {
 				return err
 			}
-			infoColor.Println("\nCould not find an existing configuration file")
-			successColor.Println("Created default configuration file at ~/.commitsense.yaml")
+			colorprinter.ColorPrint("info", "\nCould not find an existing configuration file")
+			colorprinter.ColorPrint("success", "Created default configuration file at ~/.commitsense.yaml")
 		}
 
 		return nil
@@ -83,18 +76,19 @@ func Execute() {
 }
 
 func showConfigSettings() error {
-	successColor.Println("\n\nShowing current configuration settings")
+	colorprinter.ColorPrint("success", "\nShowing current configuration settings")
 
 	config, err := config.ReadConfigFile()
 	if err != nil {
-		errorColor.Printf("Error reading configuration file: %s\n", err)
+		colorprinter.ColorPrint("error", "Error reading configuration file:")
+		fmt.Println(err)
 		return err
 	}
 
-	boldColor.Println("\nAllowed commit types:")
+	colorprinter.ColorPrint("bold", "\nAllowed commit types:")
 	printYAML(config.CommitTypes)
 
-	boldColor.Println("Skipping CI on types:")
+	colorprinter.ColorPrint("bold", "Skipping CI on types:")
 	printYAML(config.SkipCITypes)
 
 	return nil
@@ -103,7 +97,8 @@ func showConfigSettings() error {
 func printYAML(data interface{}) {
 	yamlData, err := yaml.Marshal(data)
 	if err != nil {
-		errorColor.Printf("Error printing YAML: %v", err)
+		colorprinter.ColorPrint("error", "Error printing YAML: %v")
+		fmt.Println(err)
 		return
 	}
 
