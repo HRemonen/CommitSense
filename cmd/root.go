@@ -25,7 +25,7 @@ var (
 	showVersion bool
 	showConfig  bool
 	setConfig   bool
-	validArgs   = []string{"add", "commit"}
+	validArgs   = []string{"commit"}
 )
 
 var rootCmd = &cobra.Command{
