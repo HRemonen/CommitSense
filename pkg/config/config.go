@@ -16,7 +16,11 @@ import (
 )
 
 // UserHomeDir represents the path to the user's home directory.
-var UserHomeDir string
+// ApplicationConfig represents the configuration settings for the application.
+var (
+	UserHomeDir       string
+	ApplicationConfig *Config
+)
 
 var (
 	configFile         = ".commitsense.yaml"
@@ -37,7 +41,13 @@ func init() {
 		os.Exit(1)
 	}
 
+	config, err := ReadConfigFile()
+	if err != nil {
+		os.Exit(1)
+	}
+
 	UserHomeDir = homeDir
+	ApplicationConfig = config
 }
 
 // Exists checks if the configuration file exists in the user's home directory.
@@ -56,11 +66,11 @@ func ReadConfigFile() (*Config, error) {
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			colorprinter.ColorPrint("error", "Error config file not found: %v", err)
-			os.Exit(1)
+			return nil, err
 		}
 		// Config file was found but another error was produced
 		colorprinter.ColorPrint("error", "Error reading config file: %v", err)
-		os.Exit(1)
+		return nil, err
 	}
 
 	colorprinter.ColorPrint("info", "Using config file: %v", viper.ConfigFileUsed())
