@@ -73,8 +73,6 @@ func ReadConfigFile() (*Config, error) {
 		return nil, err
 	}
 
-	colorprinter.ColorPrint("info", "Using config file: %v", viper.ConfigFileUsed())
-
 	return &Config{
 		CommitTypes: viper.GetStringSlice("commit_types"),
 		SkipCITypes: viper.GetStringSlice("skip_ci_types"),
