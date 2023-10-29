@@ -11,10 +11,11 @@ import (
 	"commitsense/pkg/author"
 	"commitsense/pkg/config"
 	"commitsense/pkg/item"
-	csprompt "commitsense/pkg/prompt"
 	"fmt"
 	"os"
 	"strings"
+
+	csprompt "commitsense/pkg/prompt"
 
 	goprompt "github.com/c-bata/go-prompt"
 	"github.com/manifoldco/promptui"
