@@ -39,6 +39,16 @@ func init() {
 		os.Exit(1)
 	}
 
+	if !Exists() {
+		err := CreateDefaultConfig()
+		if err != nil {
+			colorprinter.ColorPrint("error", "Error creating default config: %v", err)
+			os.Exit(1)
+		}
+		colorprinter.ColorPrint("info", "\nCould not find an existing configuration file")
+		colorprinter.ColorPrint("success", "Created default configuration file at %v", configFileName)
+	}
+
 	config, err := ReadConfigFile()
 	if err != nil {
 		os.Exit(1)
@@ -104,15 +114,15 @@ func ShowConfigSettings() error {
 	colorprinter.ColorPrint("info", "Using configuration file: %v", configFileName)
 
 	colorprinter.ColorPrint("bold", "\nAllowed commit types:")
-	printYAML(config.CommitTypes)
+	printConfigYAML(config.CommitTypes)
 
 	colorprinter.ColorPrint("bold", "Skipping CI on types:")
-	printYAML(config.SkipCITypes)
+	printConfigYAML(config.SkipCITypes)
 
 	return nil
 }
 
-func printYAML(data interface{}) {
+func printConfigYAML(data interface{}) {
 	yamlData, err := yaml.Marshal(data)
 	if err != nil {
 		colorprinter.ColorPrint("error", "Error printing YAML: %v", err)

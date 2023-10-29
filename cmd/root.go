@@ -37,18 +37,6 @@ files and create commit messages following the Conventional Commits specificatio
 	DisableSuggestions: false,
 	Args:               cobra.OnlyValidArgs,
 	ValidArgs:          validArgs,
-	PreRunE: func(cmd *cobra.Command, args []string) error {
-		if !config.Exists() {
-			err := config.CreateDefaultConfig()
-			if err != nil {
-				return err
-			}
-			colorprinter.ColorPrint("info", "\nCould not find an existing configuration file")
-			colorprinter.ColorPrint("success", "Created default configuration file at ~/.commitsense.yaml")
-		}
-
-		return nil
-	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if showConfig {
 			return config.ShowConfigSettings()
