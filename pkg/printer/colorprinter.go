@@ -38,9 +38,15 @@ func ColorPrint(variant string, text string, args ...interface{}) {
 	}
 
 	if len(args) > 0 {
-		printer.Printf(text, args...)
+		_, err := printer.Printf(text, args...)
+		if err != nil {
+			fmt.Println("Error printing colored message: ", err)
+		}
 		fmt.Println()
 	} else {
-		printer.Println(text)
+		_, err := printer.Println(text)
+		if err != nil {
+			fmt.Println("Error printing colored message: ", err)
+		}
 	}
 }

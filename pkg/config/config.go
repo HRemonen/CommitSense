@@ -8,8 +8,9 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package config
 
 import (
-	colorprinter "commitsense/pkg/printer"
 	"os"
+
+	colorprinter "commitsense/pkg/printer"
 
 	"github.com/spf13/viper"
 )

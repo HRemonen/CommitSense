@@ -11,10 +11,11 @@ package cmd
 
 import (
 	"commitsense/pkg/config"
-	colorprinter "commitsense/pkg/printer"
 	"fmt"
 	"os"
 	"strings"
+
+	colorprinter "commitsense/pkg/printer"
 
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
@@ -104,6 +105,6 @@ func printYAML(data interface{}) {
 	}
 
 	// Use strings.Replace to add proper indentation
-	indentedYAML := strings.Replace(string(yamlData), "\n", "\n  ", -1)
+	indentedYAML := strings.ReplaceAll(string(yamlData), "\n", "\n  ")
 	fmt.Println("  " + indentedYAML)
 }
