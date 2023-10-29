@@ -77,7 +77,7 @@ func WriteConfigFile(config *Config) error {
 	viper.AddConfigPath(UserHomeDir)
 	viper.SetConfigType("yaml")
 	viper.SetConfigName(configFile)
-	
+
 	viper.Set("commit_types", config.CommitTypes)
 	viper.Set("skip_ci_types", config.SkipCITypes)
 
