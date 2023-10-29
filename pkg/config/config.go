@@ -74,9 +74,8 @@ func ReadConfigFile() (*Config, error) {
 
 // WriteConfigFile writes the configuration file to the user's home directory.
 func WriteConfigFile(config *Config) error {
+	viper.SetConfigFile(configFile)
 	viper.AddConfigPath(UserHomeDir)
-	viper.SetConfigType("yaml")
-	viper.SetConfigName(configFile)
 
 	viper.Set("commit_types", config.CommitTypes)
 	viper.Set("skip_ci_types", config.SkipCITypes)
