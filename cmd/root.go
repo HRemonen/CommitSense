@@ -70,7 +70,8 @@ func init() {
 // Execute command for the root command
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		colorprinter.ColorPrint("error", "Error while executing: %v", err)
+
 		os.Exit(1)
 	}
 }
@@ -80,8 +81,8 @@ func showConfigSettings() error {
 
 	config, err := config.ReadConfigFile()
 	if err != nil {
-		colorprinter.ColorPrint("error", "Error reading configuration file:")
-		fmt.Println(err)
+		colorprinter.ColorPrint("error", "Error reading configuration file: %v", err)
+
 		return err
 	}
 
@@ -97,8 +98,8 @@ func showConfigSettings() error {
 func printYAML(data interface{}) {
 	yamlData, err := yaml.Marshal(data)
 	if err != nil {
-		colorprinter.ColorPrint("error", "Error printing YAML: %v")
-		fmt.Println(err)
+		colorprinter.ColorPrint("error", "Error printing YAML: %v", err)
+
 		return
 	}
 

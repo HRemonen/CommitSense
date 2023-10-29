@@ -8,6 +8,8 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package colorprinter
 
 import (
+	"fmt"
+
 	"github.com/fatih/color"
 )
 
@@ -19,7 +21,7 @@ var (
 )
 
 // ColorPrint prints out a colored messaged according to the variant given as parameter.
-func ColorPrint(variant string, text string) {
+func ColorPrint(variant string, text string, args ...interface{}) {
 	var printer *color.Color
 
 	switch variant {
@@ -35,5 +37,10 @@ func ColorPrint(variant string, text string) {
 		printer = color.New()
 	}
 
-	printer.Println(text)
+	if len(args) > 0 {
+		printer.Printf(text, args...)
+		fmt.Println()
+	} else {
+		printer.Println(text)
+	}
 }

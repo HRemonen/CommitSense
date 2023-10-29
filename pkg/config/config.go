@@ -8,7 +8,7 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package config
 
 import (
-	"fmt"
+	colorprinter "commitsense/pkg/printer"
 	"os"
 
 	"github.com/spf13/viper"
@@ -32,7 +32,7 @@ type Config struct {
 func init() {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		fmt.Println("Error getting the user's home directory: ", err)
+		colorprinter.ColorPrint("error", "Error getting the user's home directory: %v", err)
 		os.Exit(1)
 	}
 
@@ -54,15 +54,15 @@ func ReadConfigFile() (*Config, error) {
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			fmt.Println("Error config file not found: ", err)
+			colorprinter.ColorPrint("error", "Error config file not found: %v", err)
 			os.Exit(1)
 		}
 		// Config file was found but another error was produced
-		fmt.Println("Error reading config file: ", err)
+		colorprinter.ColorPrint("error", "Error reading config file: %v", err)
 		os.Exit(1)
 	}
 
-	fmt.Println("Using config file: ", viper.ConfigFileUsed())
+	colorprinter.ColorPrint("info", "Using config file: %v", viper.ConfigFileUsed())
 
 	return &Config{
 		CommitTypes: viper.GetStringSlice("commit_types"),
