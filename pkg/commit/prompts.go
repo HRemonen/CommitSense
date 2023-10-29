@@ -9,8 +9,9 @@ package commit
 
 import (
 	"commitsense/pkg/author"
+	"commitsense/pkg/config"
 	"commitsense/pkg/item"
-	"commitsense/pkg/prompt"
+	csprompt "commitsense/pkg/prompt"
 	"fmt"
 	"os"
 	"strings"
@@ -21,11 +22,11 @@ import (
 
 // PromptCommitType prompts the user to select a commit type.
 func PromptCommitType(prompt csprompt.CSPrompt) (string, error) {
-	promptItems := []string{"feat", "fix", "chore", "docs", "style", "refactor", "perf", "test", "build", "ci"}
+	config, err := config.ReadConfigFile()
 
 	promptType := promptui.Select{
 		Label: prompt.Label,
-		Items: promptItems,
+		Items: config.CommitTypes,
 	}
 
 	_, typeResult, err := promptType.Run()
