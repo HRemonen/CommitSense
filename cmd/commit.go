@@ -16,11 +16,10 @@ package cmd
 import (
 	"commitsense/pkg/commit"
 	"commitsense/pkg/validators"
-	"fmt"
 	"os"
 
-	csprompt "commitsense/pkg/prompt"
 	colorprinter "commitsense/pkg/printer"
+	csprompt "commitsense/pkg/prompt"
 
 	"github.com/spf13/cobra"
 )
@@ -37,7 +36,7 @@ var commitCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		stagedFiles, err := commit.GetStagedFiles()
 		if err != nil {
-			fmt.Println("Error: ", err)
+			colorprinter.ColorPrint("error", "Error: %v", err)
 			os.Exit(1)
 		}
 
