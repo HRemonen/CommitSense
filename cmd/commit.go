@@ -20,6 +20,7 @@ import (
 	"os"
 
 	csprompt "commitsense/pkg/prompt"
+	colorprinter "commitsense/pkg/printer"
 
 	"github.com/spf13/cobra"
 )
@@ -44,7 +45,7 @@ var commitCmd = &cobra.Command{
 			Label: "Select a commit type",
 		})
 		if err != nil {
-			fmt.Println("Error prompting for the commit type: ", err)
+			colorprinter.ColorPrint("error", "Error prompting for the commit type: %v", err)
 			os.Exit(1)
 		}
 
@@ -52,7 +53,7 @@ var commitCmd = &cobra.Command{
 			Label: "Enter a commit scope (optional)",
 		})
 		if err != nil {
-			fmt.Println("Error prompting for the commit scope:", err)
+			colorprinter.ColorPrint("error", "Error prompting for the commit scope: %v", err)
 			os.Exit(1)
 		}
 
@@ -61,7 +62,7 @@ var commitCmd = &cobra.Command{
 			Validate: validators.ValidateStringNotEmpty,
 		})
 		if err != nil {
-			fmt.Println("Error prompting for the commit description:", err)
+			colorprinter.ColorPrint("error", "Error prompting for the commit description: %v", err)
 			os.Exit(1)
 		}
 
@@ -69,7 +70,7 @@ var commitCmd = &cobra.Command{
 			Label: "Enter a detailed commit body (press Enter twice to finish)",
 		})
 		if err != nil {
-			fmt.Println("Error prompting for the commit body:", err)
+			colorprinter.ColorPrint("error", "Error prompting for the commit body: %v", err)
 			os.Exit(1)
 		}
 
@@ -79,7 +80,7 @@ var commitCmd = &cobra.Command{
 				Label: "Enter Co-Author information ",
 			})
 			if err != nil {
-				fmt.Println("Error prompting for the co-authors:", err)
+				colorprinter.ColorPrint("error", "Error prompting for the co-authors: %v", err)
 				os.Exit(1)
 			}
 		}
@@ -90,7 +91,7 @@ var commitCmd = &cobra.Command{
 				Label: "Enter a description of the breaking change",
 			})
 			if err != nil {
-				fmt.Println("Error prompting for the breaking change description:", err)
+				colorprinter.ColorPrint("error", "Error prompting for the breaking change description: %v", err)
 				os.Exit(1)
 			}
 		}
@@ -107,7 +108,7 @@ var commitCmd = &cobra.Command{
 		}
 
 		if err := commit.CreateGitCommit(commitInfo, stagedFiles); err != nil {
-			fmt.Println("Error creating commit:", err)
+			colorprinter.ColorPrint("error", "Error creating a commit: %v", err)
 			os.Exit(1)
 		}
 	},
