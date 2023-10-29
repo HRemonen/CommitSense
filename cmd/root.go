@@ -12,9 +12,13 @@ package cmd
 import (
 	"commitsense/pkg/config"
 	"fmt"
+	"log"
 	"os"
+	"strings"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v3"
 )
 
 var (
@@ -73,16 +77,35 @@ func Execute() {
 }
 
 func showConfigSettings() error {
-	fmt.Println("Showing current configuration settings")
+	highlight := color.New(color.FgGreen).Add(color.Bold)
+	bold := color.New(color.Bold)
+
+	highlight.Println("\n\nShowing current configuration settings")
 
 	config, err := config.ReadConfigFile()
 	if err != nil {
-		fmt.Println("Error reading configuration file: ", err)
+		errorColor := color.New(color.FgRed).Add(color.Bold)
+		errorColor.Printf("Error reading configuration file: %s\n", err)
 		return err
 	}
 
-	fmt.Println("Allowed commit types: ", config.CommitTypes)
-	fmt.Println("Skipping CI on types: ", config.SkipCITypes)
+	bold.Println("\nAllowed commit types:")
+	printYAML(config.CommitTypes)
+
+	bold.Println("Skipping CI on types:")
+	printYAML(config.SkipCITypes)
 
 	return nil
+}
+
+func printYAML(data interface{}) {
+	yamlData, err := yaml.Marshal(data)
+	if err != nil {
+		log.Printf("Error printing YAML: %v", err)
+		return
+	}
+
+	// Use strings.Replace to add proper indentation
+	indentedYAML := strings.Replace(string(yamlData), "\n", "\n  ", -1)
+	fmt.Println("  " + indentedYAML)
 }
