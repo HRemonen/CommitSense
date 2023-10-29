@@ -18,14 +18,10 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// UserHomeDir represents the path to the user's home directory.
-var UserHomeDir string
-
-// ApplicationConfig represents the configuration settings for the application.
-var ApplicationConfig *Config
-
 var (
-	configFile         = ".commitsense.yaml"
+	userHomeDir        string
+	configFile         *Config
+	configFileName     = ".commitsense.yaml"
 	defaultCommitTypes = []string{"feat", "fix", "chore", "docs", "style", "refactor", "perf", "test", "build", "ci"}
 	defaultSkipCITypes = []string{"docs"}
 )
@@ -48,13 +44,13 @@ func init() {
 		os.Exit(1)
 	}
 
-	UserHomeDir = homeDir
-	ApplicationConfig = config
+	userHomeDir = homeDir
+	configFile = config
 }
 
 // Exists checks if the configuration file exists in the user's home directory.
 func Exists() bool {
-	if fi, err := os.Stat(configFile); err != nil || fi.IsDir() {
+	if fi, err := os.Stat(configFileName); err != nil || fi.IsDir() {
 		return false
 	}
 	return true
@@ -62,8 +58,8 @@ func Exists() bool {
 
 // ReadConfigFile reads the configuration file from the user's home directory.
 func ReadConfigFile() (*Config, error) {
-	viper.SetConfigFile(configFile)
-	viper.AddConfigPath(UserHomeDir)
+	viper.SetConfigFile(configFileName)
+	viper.AddConfigPath(userHomeDir)
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
@@ -83,8 +79,8 @@ func ReadConfigFile() (*Config, error) {
 
 // WriteConfigFile writes the configuration file to the user's home directory.
 func WriteConfigFile(config *Config) error {
-	viper.SetConfigFile(configFile)
-	viper.AddConfigPath(UserHomeDir)
+	viper.SetConfigFile(configFileName)
+	viper.AddConfigPath(userHomeDir)
 
 	viper.Set("commit_types", config.CommitTypes)
 	viper.Set("skip_ci_types", config.SkipCITypes)
@@ -103,9 +99,9 @@ func CreateDefaultConfig() error {
 // ShowConfigSettings prints out the current configuration settings.
 func ShowConfigSettings() error {
 	colorprinter.ColorPrint("success", "\nShowing current configuration settings")
-	config := ApplicationConfig
+	config := configFile
 
-	colorprinter.ColorPrint("info", "Using configuration file: %v", configFile)
+	colorprinter.ColorPrint("info", "Using configuration file: %v", configFileName)
 
 	colorprinter.ColorPrint("bold", "\nAllowed commit types:")
 	printYAML(config.CommitTypes)

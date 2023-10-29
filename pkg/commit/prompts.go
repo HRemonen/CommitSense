@@ -22,7 +22,7 @@ import (
 
 // PromptCommitType prompts the user to select a commit type.
 func PromptCommitType(prompt csprompt.CSPrompt) (string, error) {
-	config, err := config.ReadConfigFile()
+	config, _ := config.ReadConfigFile()
 
 	promptType := promptui.Select{
 		Label: prompt.Label,

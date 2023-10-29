@@ -8,6 +8,7 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package commit
 
 import (
+	"commitsense/pkg/config"
 	"errors"
 	"os"
 	"os/exec"
@@ -62,7 +63,9 @@ func GetStagedFiles() ([]string, error) {
 // CreateCommitMessage creates a commit message in the Conventional Commits format.
 func createCommitMessage(commit Commit) string {
 	var commitMessage string
+
 	commitMessage = commit.CommitType
+	config, _ := config.ReadConfigFile()
 
 	if commit.CommitScope != "" {
 		commitMessage += "(" + commit.CommitScope + ")"
@@ -78,11 +81,12 @@ func createCommitMessage(commit Commit) string {
 		commitMessage += "\n\n" + commit.CommitBody
 	}
 
-	// TODO: ADD configurable option for adding [skip ci] to commit message on docs commits
-	/* if commit.CommitType == "docs" {
-		commitMessage += "\n"
-		commitMessage += "\n[skip ci]"
-	} */
+	for _, skipType := range config.SkipCITypes {
+		if commit.CommitType == skipType {
+			commitMessage += "\n[skip ci]"
+			break
+		}
+	}
 
 	if commit.IsBreakingChange {
 		commitMessage += "\n"
