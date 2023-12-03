@@ -1,17 +1,14 @@
 # CommitSense
 
-CommitSense is a command-line tool that simplifies Git version control by providing an interactive and standardized way to stage files and create commit messages following the Conventional Commits specification.
+CommitSense is a command-line tool that simplifies Git version control by providing an interactive and standardized way to create commit messages following the Conventional Commits specification.
 
 ## Features
 
-- Interactive file selection for staging.
 - Conventional Commits-based commit message generation.
 - Improved commit message consistency.
 - Streamlined Git workflow.
 
 Here's the cool part: CommitSense plays well with native Git commands under the hood. So, while you're using Git commands like a console wizard, CommitSense is right there, ensuring compatibility and helping you create those commits with style when you're ready!
-
-But, there's one thing to note: CommitSense doesn't support chunking files when adding. So, for those complex file-staging tasks, you might want to stick to the classic `git add` method.
 
 ## Install
 
@@ -21,17 +18,9 @@ Check out the homebrew formula [repository](https://github.com/HRemonen/homebrew
 
 ### Other
 
-Idk. Just clone the repo and use the binary.
+You can always clone the repository, build the application and use the binary for running the application.
 
 ## Usage
-
-### Adding Files
-
-```bash
-commitsense add
-```
-
-This command launches an interactive interface for selecting files to stage.
 
 ### Creating Commits
 
