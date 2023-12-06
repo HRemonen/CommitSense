@@ -108,15 +108,15 @@ func ShowConfigSettings() error {
 	colorprinter.ColorPrint("info", "Using configuration file: %v", configFileName)
 
 	colorprinter.ColorPrint("bold", "\nAllowed commit types:")
-	printConfigYAML(config.CommitTypes)
+	printConfig(config.CommitTypes)
 
 	colorprinter.ColorPrint("bold", "Skipping CI on types:")
-	printConfigYAML(config.SkipCITypes)
+	printConfig(config.SkipCITypes)
 
 	return nil
 }
 
-func printConfigYAML(data interface{}) {
+func printConfig(data interface{}) {
 	jsonData, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		colorprinter.ColorPrint("error", "Error printing YAML: %v", err)
