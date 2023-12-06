@@ -21,7 +21,7 @@ import (
 var (
 	configFile         *Config
 	configFileName     = ".commitsense.yaml"
-	defaultCommitTypes = []string{"feat", "fix", "chore", "docs", "style", "refactor", "perf", "test", "build", "ci"}
+	defaultCommitTypes = []string{"feat", "fix", "docs", "style", "refactor", "perf", "test", "build", "ci", "chore", "revert"}
 	defaultSkipCITypes = []string{"docs"}
 )
 
