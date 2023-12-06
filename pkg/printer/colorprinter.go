@@ -17,6 +17,7 @@ var (
 	successColor = color.New(color.FgGreen).Add(color.Bold)
 	infoColor    = color.New(color.FgCyan).Add(color.Bold)
 	errorColor   = color.New(color.FgRed).Add(color.Bold)
+	stdOutColor  = color.New(color.FgWhite)
 	boldColor    = color.New(color.Bold)
 )
 
@@ -31,6 +32,8 @@ func ColorPrint(variant string, text string, args ...interface{}) {
 		printer = infoColor
 	case "error":
 		printer = errorColor
+	case "stdout":
+		printer = stdOutColor
 	case "bold":
 		printer = boldColor
 	default:

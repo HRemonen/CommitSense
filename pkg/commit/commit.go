@@ -102,7 +102,7 @@ func createCommitMessage(commit Commit) string {
 	return commitMessage
 }
 
-// CreateGitCommit creates a Git commit with the given message and files.
+// CreateGitCommit creates a Git commit from the commit struct.
 func CreateGitCommit(commit Commit) error {
 	repo, err := git.PlainOpen(".")
 	if err != nil {
@@ -127,7 +127,7 @@ func CreateGitCommit(commit Commit) error {
 	}
 
 	colorprinter.ColorPrint("success", "Created new commit:")
-	colorprinter.ColorPrint("info", commitObj.String())
+	colorprinter.ColorPrint("stdout", commitObj.String())
 
 	return nil
 }
