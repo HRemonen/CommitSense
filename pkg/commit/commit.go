@@ -13,6 +13,8 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/go-git/go-git/v5"
 )
 
 // Commit represents information needed for creating a Git commit.
@@ -48,14 +50,31 @@ func getStagedFilesFromTerminalOutput(output []byte) []string {
 
 // GetStagedFiles returns a list of staged files.
 func GetStagedFiles() ([]string, error) {
-	statusCmd := "git status --porcelain --untracked-files=all | grep '^[A|C|M|D|R]'"
-	cmd := exec.Command("bash", "-c", statusCmd)
-	output, err := cmd.CombinedOutput()
+	repo, err := git.PlainOpen(".")
 	if err != nil {
-		return nil, errors.New("could not get staged files, is the files added for staging?")
+		return nil, errors.New("could not open the Git repository")
 	}
 
-	stagedFiles := getStagedFilesFromTerminalOutput(output)
+	worktree, err := repo.Worktree()
+	if err != nil {
+		return nil, errors.New("could not get the Git worktree")
+	}
+
+	status, err := worktree.Status()
+	if err != nil {
+		return nil, errors.New("could not get the Git status")
+	}
+
+	var stagedFiles []string
+	for file, status := range status {
+		if status.Staging == git.Added || status.Staging == git.Modified || status.Staging == git.Deleted || status.Staging == git.Renamed || status.Staging == git.Copied {
+			stagedFiles = append(stagedFiles, file)
+		}
+	}
+
+	if len(stagedFiles) == 0 {
+		return nil, errors.New("could not get staged files, is the files added for staging?")
+	}
 
 	return stagedFiles, nil
 }
