@@ -34,7 +34,7 @@ var commitCmd = &cobra.Command{
 	Use:   "commit",
 	Short: "Create a commit with a standardized message",
 	Run: func(cmd *cobra.Command, args []string) {
-		stagedFiles, err := commit.GetStagedFiles()
+		_, err := commit.GetStagedFiles()
 		if err != nil {
 			colorprinter.ColorPrint("error", "Error: %v", err)
 			os.Exit(1)
@@ -106,7 +106,7 @@ var commitCmd = &cobra.Command{
 			BreakingChangeDescription: breakingChangeDescription,
 		}
 
-		if err := commit.CreateGitCommit(commitInfo, stagedFiles); err != nil {
+		if err := commit.CreateGitCommit(commitInfo); err != nil {
 			colorprinter.ColorPrint("error", "Error creating a commit: %v", err)
 			os.Exit(1)
 		}
