@@ -9,8 +9,9 @@ package commit
 
 import (
 	"commitsense/pkg/config"
-	colorprinter "commitsense/pkg/printer"
 	"errors"
+
+	colorprinter "commitsense/pkg/printer"
 
 	"github.com/go-git/go-git/v5"
 )
@@ -102,7 +103,7 @@ func createCommitMessage(commit Commit) string {
 }
 
 // CreateGitCommit creates a Git commit with the given message and files.
-func CreateGitCommit(commit Commit, files []string) error {
+func CreateGitCommit(commit Commit) error {
 	repo, err := git.PlainOpen(".")
 	if err != nil {
 		return errors.New("could not open the Git repository")
@@ -116,7 +117,6 @@ func CreateGitCommit(commit Commit, files []string) error {
 	commitMessage := createCommitMessage(commit)
 
 	createdCommit, err := worktree.Commit(commitMessage, &git.CommitOptions{})
-
 	if err != nil {
 		return errors.New("could not create the Git commit")
 	}
