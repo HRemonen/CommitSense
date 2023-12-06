@@ -50,7 +50,7 @@ func init() {
 	configFile = config
 }
 
-// Exists checks if the configuration file exists in the user's home directory.
+// Exists checks if the configuration file exists in the project's root directory.
 func Exists() bool {
 	if fi, err := os.Stat(configFileName); err != nil || fi.IsDir() {
 		return false
@@ -58,7 +58,7 @@ func Exists() bool {
 	return true
 }
 
-// ReadConfigFile reads the configuration file from the user's home directory.
+// ReadConfigFile reads the configuration file from the project's root directory.
 func ReadConfigFile() (*Config, error) {
 	viper.SetConfigFile(configFileName)
 
@@ -78,7 +78,7 @@ func ReadConfigFile() (*Config, error) {
 	}, nil
 }
 
-// WriteConfigFile writes the configuration file to the user's home directory.
+// WriteConfigFile writes the configuration file to the project's root directory.
 func WriteConfigFile(config *Config) error {
 	viper.SetConfigFile(configFileName)
 
@@ -88,7 +88,7 @@ func WriteConfigFile(config *Config) error {
 	return viper.WriteConfig()
 }
 
-// CreateDefaultConfig writes a default configuration file to the user's home directory.
+// CreateDefaultConfig writes a default configuration file to the project's root directory.
 func CreateDefaultConfig() error {
 	return WriteConfigFile(&Config{
 		CommitTypes: defaultCommitTypes,
