@@ -9,6 +9,7 @@ package commit
 
 import (
 	"commitsense/pkg/config"
+	colorprinter "commitsense/pkg/printer"
 	"errors"
 	"fmt"
 
@@ -126,6 +127,7 @@ func CreateGitCommit(commit Commit, files []string) error {
 		return errors.New("could not get the Git commit object")
 	}
 
+	colorprinter.ColorPrint("success", "Created new commit:")
 	fmt.Println(commitObj)
 
 	return nil
