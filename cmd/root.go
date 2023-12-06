@@ -11,6 +11,7 @@ package cmd
 
 import (
 	"commitsense/pkg/config"
+	"fmt"
 	"os"
 
 	colorprinter "commitsense/pkg/printer"
@@ -19,7 +20,6 @@ import (
 )
 
 var (
-	version     string
 	showVersion bool
 	showConfig  bool
 	setConfig   bool
@@ -28,7 +28,6 @@ var (
 
 var rootCmd = &cobra.Command{
 	Use:     "commitsense",
-	Version: version,
 	Short:   "A tool to improve commit messages",
 	Long: `
 CommitSense is a command-line tool that simplifies Git 
@@ -46,6 +45,10 @@ files and create commit messages following the Conventional Commits specificatio
 
 		return cmd.Help()
 	},
+}
+
+func SetVersion(version string, date string) {
+	rootCmd.Version = fmt.Sprintf("%s (Built on %s)", version, date)
 }
 
 func init() {

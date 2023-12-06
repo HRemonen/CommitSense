@@ -5,6 +5,12 @@ package main
 
 import "commitsense/cmd"
 
+var (
+	version	 string
+	date    string
+)
+
 func main() {
+	cmd.SetVersion(version, date)
 	cmd.Execute()
 }
