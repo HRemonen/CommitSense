@@ -20,10 +20,9 @@ import (
 )
 
 var (
-	showVersion bool
-	showConfig  bool
-	setConfig   bool
-	validArgs   = []string{"commit", "help"}
+	showConfig bool
+	setConfig  bool
+	validArgs  = []string{"commit", "help"}
 )
 
 var rootCmd = &cobra.Command{
