@@ -34,22 +34,6 @@ func PromptCommitType(prompt csprompt.Prompt) (string, error) {
 	return typeResult, err
 }
 
-// PromptForBool prompts the user to enter a boolean value.
-func PromptForBool(prompt csprompt.Prompt) (bool, error) {
-	promptBool := promptui.Prompt{
-		Label:    prompt.Label,
-		Validate: prompt.Validate,
-		Default:  prompt.Default,
-	}
-
-	result, err := promptBool.Run()
-	if err != nil {
-		return false, err
-	}
-
-	return result == "Y" || result == "y", nil
-}
-
 // PromptForString prompts the user to enter a string.
 func PromptForString(prompt csprompt.Prompt) (string, error) {
 	promptString := promptui.Prompt{
