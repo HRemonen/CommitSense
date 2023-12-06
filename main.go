@@ -6,7 +6,7 @@ package main
 import "commitsense/cmd"
 
 var (
-	version	 string
+	version string
 	date    string
 )
 

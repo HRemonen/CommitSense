@@ -27,8 +27,8 @@ var (
 )
 
 var rootCmd = &cobra.Command{
-	Use:     "commitsense",
-	Short:   "A tool to improve commit messages",
+	Use:   "commitsense",
+	Short: "A tool to improve commit messages",
 	Long: `
 CommitSense is a command-line tool that simplifies Git 
 version control by providing an interactive and standardized way to stage 
@@ -47,6 +47,7 @@ files and create commit messages following the Conventional Commits specificatio
 	},
 }
 
+// SetVersion sets the version and build date for the application.
 func SetVersion(version string, date string) {
 	rootCmd.Version = fmt.Sprintf("%s (Built on %s)", version, date)
 }
