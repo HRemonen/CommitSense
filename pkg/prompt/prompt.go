@@ -13,7 +13,13 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 */
 package prompt
 
-// prompt represents a promptui prompt object used for user input.
+// Item represents an item with an ID referring to a certain item in a multiselect prompt
+type Item struct {
+	ID         string
+	IsSelected bool
+}
+
+// Prompt represents a promptui prompt object used for user input.
 type Prompt struct {
 	Label     string
 	Items     []*Item
