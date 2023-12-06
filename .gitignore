@@ -1,6 +1,5 @@
 
 dist/
 
-.commitsense.yaml
-.commitsense
+.commitsense.*
 commitsense
