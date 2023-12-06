@@ -19,7 +19,6 @@ import (
 )
 
 var (
-	userHomeDir        string
 	configFile         *Config
 	configFileName     = ".commitsense.yaml"
 	defaultCommitTypes = []string{"feat", "fix", "chore", "docs", "style", "refactor", "perf", "test", "build", "ci"}
@@ -33,12 +32,6 @@ type Config struct {
 }
 
 func init() {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		colorprinter.ColorPrint("error", "Error getting the user's home directory: %v", err)
-		os.Exit(1)
-	}
-
 	if !Exists() {
 		err := CreateDefaultConfig()
 		if err != nil {
@@ -54,7 +47,6 @@ func init() {
 		os.Exit(1)
 	}
 
-	userHomeDir = homeDir
 	configFile = config
 }
 
@@ -69,7 +61,6 @@ func Exists() bool {
 // ReadConfigFile reads the configuration file from the user's home directory.
 func ReadConfigFile() (*Config, error) {
 	viper.SetConfigFile(configFileName)
-	viper.AddConfigPath(userHomeDir)
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
@@ -90,7 +81,6 @@ func ReadConfigFile() (*Config, error) {
 // WriteConfigFile writes the configuration file to the user's home directory.
 func WriteConfigFile(config *Config) error {
 	viper.SetConfigFile(configFileName)
-	viper.AddConfigPath(userHomeDir)
 
 	viper.Set("commit_types", config.CommitTypes)
 	viper.Set("skip_ci_types", config.SkipCITypes)
