@@ -11,7 +11,6 @@ import (
 	"commitsense/pkg/config"
 	colorprinter "commitsense/pkg/printer"
 	"errors"
-	"fmt"
 
 	"github.com/go-git/go-git/v5"
 )
@@ -128,7 +127,7 @@ func CreateGitCommit(commit Commit, files []string) error {
 	}
 
 	colorprinter.ColorPrint("success", "Created new commit:")
-	fmt.Println(commitObj)
+	colorprinter.ColorPrint("success", commitObj.Hash.String())
 
 	return nil
 }
