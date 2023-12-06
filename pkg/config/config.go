@@ -8,27 +8,28 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package config
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
-	"strings"
 
 	colorprinter "commitsense/pkg/printer"
 
 	"github.com/spf13/viper"
-	"gopkg.in/yaml.v3"
 )
 
 var (
 	configFile         *Config
-	configFileName     = ".commitsense.yaml"
+	configFileName     = ".commitsense.json"
+	defaultVersion     = 1
 	defaultCommitTypes = []string{"feat", "fix", "docs", "style", "refactor", "perf", "test", "build", "ci", "chore", "revert"}
 	defaultSkipCITypes = []string{"docs"}
 )
 
 // Config represents the configuration settings for the application.
 type Config struct {
-	CommitTypes []string `yaml:"commit_types"`
-	SkipCITypes []string `yaml:"skip_ci_types"`
+	Version     int      `json:"version"`
+	CommitTypes []string `json:"commit_types"`
+	SkipCITypes []string `json:"skip_ci_types"`
 }
 
 func init() {
@@ -73,6 +74,7 @@ func ReadConfigFile() (*Config, error) {
 	}
 
 	return &Config{
+		Version:     viper.GetInt("version"),
 		CommitTypes: viper.GetStringSlice("commit_types"),
 		SkipCITypes: viper.GetStringSlice("skip_ci_types"),
 	}, nil
@@ -82,6 +84,7 @@ func ReadConfigFile() (*Config, error) {
 func WriteConfigFile(config *Config) error {
 	viper.SetConfigFile(configFileName)
 
+	viper.Set("version", config.Version)
 	viper.Set("commit_types", config.CommitTypes)
 	viper.Set("skip_ci_types", config.SkipCITypes)
 
@@ -91,6 +94,7 @@ func WriteConfigFile(config *Config) error {
 // CreateDefaultConfig writes a default configuration file to the project's root directory.
 func CreateDefaultConfig() error {
 	return WriteConfigFile(&Config{
+		Version:     defaultVersion,
 		CommitTypes: defaultCommitTypes,
 		SkipCITypes: defaultSkipCITypes,
 	})
@@ -113,14 +117,12 @@ func ShowConfigSettings() error {
 }
 
 func printConfigYAML(data interface{}) {
-	yamlData, err := yaml.Marshal(data)
+	jsonData, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		colorprinter.ColorPrint("error", "Error printing YAML: %v", err)
 
 		return
 	}
 
-	// Use strings.Replace to add proper indentation
-	indentedYAML := strings.ReplaceAll(string(yamlData), "\n", "\n  ")
-	fmt.Println("  " + indentedYAML)
+	fmt.Println(string(jsonData))
 }
