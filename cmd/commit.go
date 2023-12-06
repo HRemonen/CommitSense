@@ -40,7 +40,7 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		commitType, err := commit.PromptCommitType(csprompt.CSPrompt{
+		commitType, err := commit.PromptCommitType(csprompt.Prompt{
 			Label: "Select a commit type",
 		})
 		if err != nil {
@@ -48,7 +48,7 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		commitScope, err := commit.PromptForString(csprompt.CSPrompt{
+		commitScope, err := commit.PromptForString(csprompt.Prompt{
 			Label: "Enter a commit scope (optional)",
 		})
 		if err != nil {
@@ -56,7 +56,7 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		commitDescription, err := commit.PromptForString(csprompt.CSPrompt{
+		commitDescription, err := commit.PromptForString(csprompt.Prompt{
 			Label:    "Enter a brief commit description",
 			Validate: validators.ValidateStringNotEmpty,
 		})
@@ -65,7 +65,7 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		commitBody, err := commit.PromptForMultilineString(csprompt.CSPrompt{
+		commitBody, err := commit.PromptForMultilineString(csprompt.Prompt{
 			Label: "Enter a detailed commit body (press Enter twice to finish)",
 		})
 		if err != nil {
@@ -75,7 +75,7 @@ var commitCmd = &cobra.Command{
 
 		var coAuthors []string
 		if isCoAuthored {
-			coAuthors, err = commit.PromptForCoAuthors(csprompt.CSPrompt{
+			coAuthors, err = commit.PromptForCoAuthors(csprompt.Prompt{
 				Label: "Enter Co-Author information ",
 			})
 			if err != nil {
@@ -86,7 +86,7 @@ var commitCmd = &cobra.Command{
 
 		var breakingChangeDescription string
 		if isBreakingChange {
-			breakingChangeDescription, err = commit.PromptForString(csprompt.CSPrompt{
+			breakingChangeDescription, err = commit.PromptForString(csprompt.Prompt{
 				Label: "Enter a description of the breaking change",
 			})
 			if err != nil {

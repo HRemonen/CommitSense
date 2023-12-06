@@ -10,7 +10,6 @@ package commit
 import (
 	"commitsense/pkg/author"
 	"commitsense/pkg/config"
-	"commitsense/pkg/item"
 	"fmt"
 	"os"
 	"strings"
@@ -22,7 +21,7 @@ import (
 )
 
 // PromptCommitType prompts the user to select a commit type.
-func PromptCommitType(prompt csprompt.CSPrompt) (string, error) {
+func PromptCommitType(prompt csprompt.Prompt) (string, error) {
 	config, _ := config.ReadConfigFile()
 
 	promptType := promptui.Select{
@@ -36,7 +35,7 @@ func PromptCommitType(prompt csprompt.CSPrompt) (string, error) {
 }
 
 // PromptForBool prompts the user to enter a boolean value.
-func PromptForBool(prompt csprompt.CSPrompt) (bool, error) {
+func PromptForBool(prompt csprompt.Prompt) (bool, error) {
 	promptBool := promptui.Prompt{
 		Label:    prompt.Label,
 		Validate: prompt.Validate,
@@ -52,7 +51,7 @@ func PromptForBool(prompt csprompt.CSPrompt) (bool, error) {
 }
 
 // PromptForString prompts the user to enter a string.
-func PromptForString(prompt csprompt.CSPrompt) (string, error) {
+func PromptForString(prompt csprompt.Prompt) (string, error) {
 	promptString := promptui.Prompt{
 		Label:    prompt.Label,
 		Validate: prompt.Validate,
@@ -63,7 +62,7 @@ func PromptForString(prompt csprompt.CSPrompt) (string, error) {
 
 // PromptForMultilineString prompts the user for a multiline string input based on the provided prompt configuration.
 // Users can enter multiple lines of text until they press Enter twice to finish.
-func PromptForMultilineString(prompt csprompt.CSPrompt) (string, error) {
+func PromptForMultilineString(prompt csprompt.Prompt) (string, error) {
 	var lines []string
 	for {
 		line, err := PromptForString(prompt)
@@ -78,10 +77,10 @@ func PromptForMultilineString(prompt csprompt.CSPrompt) (string, error) {
 }
 
 // Prepend the prompt.Items with the continue item
-func prependItemsWithSpecialOptions(items []*item.Item) []*item.Item {
-	continueItem := &item.Item{ID: "Continue"}
+func prependItemsWithSpecialOptions(items []*csprompt.Item) []*csprompt.Item {
+	continueItem := &csprompt.Item{ID: "Continue"}
 
-	items = append([]*item.Item{continueItem}, items...)
+	items = append([]*csprompt.Item{continueItem}, items...)
 
 	return items
 }
@@ -94,7 +93,7 @@ func createSelectTemplates() *promptui.SelectTemplates {
 	}
 }
 
-func promptForMultipleItems(prompt csprompt.CSPrompt) ([]*item.Item, error) {
+func promptForMultipleItems(prompt csprompt.Prompt) ([]*csprompt.Item, error) {
 	promptItems := prependItemsWithSpecialOptions(prompt.Items)
 
 	promptMultiple := promptui.Select{
@@ -106,7 +105,7 @@ func promptForMultipleItems(prompt csprompt.CSPrompt) ([]*item.Item, error) {
 		HideSelected: true,
 	}
 
-	var selectedItems []*item.Item
+	var selectedItems []*csprompt.Item
 
 	for {
 		selectionIdx, _, err := promptMultiple.Run()
@@ -154,7 +153,7 @@ func coAuthorCompleter(suggestedCoAuthors []string) goprompt.Completer { // Use 
 // This function provides real-time auto-completion suggestions based on the suggestedCoAuthors
 // list. Users can choose from the suggestions or enter custom co-authors. It returns a slice
 // of selected co-author names.
-func PromptForCoAuthors(prompt csprompt.CSPrompt) ([]string, error) {
+func PromptForCoAuthors(prompt csprompt.Prompt) ([]string, error) {
 	suggestedCoAuthors, err := author.GetSuggestedCoAuthors()
 	if err != nil {
 		fmt.Println("Error getting the suggested co-authors:", err)
