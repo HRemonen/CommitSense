@@ -127,7 +127,7 @@ func CreateGitCommit(commit Commit, files []string) error {
 	}
 
 	colorprinter.ColorPrint("success", "Created new commit:")
-	colorprinter.ColorPrint("success", commitObj.Hash.String())
+	colorprinter.ColorPrint("success", commitObj.String())
 
 	return nil
 }
