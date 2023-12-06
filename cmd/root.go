@@ -19,15 +19,17 @@ import (
 )
 
 var (
+	version     string
 	showVersion bool
 	showConfig  bool
 	setConfig   bool
-	validArgs   = []string{"commit"}
+	validArgs   = []string{"commit", "help"}
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "commitsense",
-	Short: "A tool to improve commit messages",
+	Use:     "commitsense",
+	Version: version,
+	Short:   "A tool to improve commit messages",
 	Long: `
 CommitSense is a command-line tool that simplifies Git 
 version control by providing an interactive and standardized way to stage 
