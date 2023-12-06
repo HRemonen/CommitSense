@@ -12,7 +12,6 @@ import (
 	"errors"
 	"os"
 	"os/exec"
-	"strings"
 
 	"github.com/go-git/go-git/v5"
 )
@@ -27,25 +26,6 @@ type Commit struct {
 	CoAuthors                 []string
 	IsBreakingChange          bool
 	BreakingChangeDescription string
-}
-
-// getStringsFromTerminalOutput takes the os/exec functions returned byte array
-// and transforms the bytes into an array of lines
-func getStagedFilesFromTerminalOutput(output []byte) []string {
-	lines := strings.Split(string(output), "\n")
-
-	var stagedFiles []string
-	for _, line := range lines {
-		// Strip leading and trailing whitespace
-		line = strings.TrimSpace(line)
-
-		parts := strings.Fields(line)
-		if len(parts) == 2 {
-			stagedFiles = append(stagedFiles, parts[1])
-		}
-	}
-
-	return stagedFiles
 }
 
 // GetStagedFiles returns a list of staged files.
