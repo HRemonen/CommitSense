@@ -10,8 +10,7 @@ package commit
 import (
 	"commitsense/pkg/config"
 	"errors"
-	"os"
-	"os/exec"
+	"fmt"
 
 	"github.com/go-git/go-git/v5"
 )
@@ -104,13 +103,30 @@ func createCommitMessage(commit Commit) string {
 
 // CreateGitCommit creates a Git commit with the given message and files.
 func CreateGitCommit(commit Commit, files []string) error {
+	repo, err := git.PlainOpen(".")
+	if err != nil {
+		return errors.New("could not open the Git repository")
+	}
+
+	worktree, err := repo.Worktree()
+	if err != nil {
+		return errors.New("could not get the Git worktree")
+	}
+
 	commitMessage := createCommitMessage(commit)
 
-	commitArgs := append([]string{"commit", "-m", commitMessage}, files...)
+	createdCommit, err := worktree.Commit(commitMessage, &git.CommitOptions{})
 
-	commitGitCmd := exec.Command("git", commitArgs...) //nolint:gosec // because I do not think the users can do anything bad here
-	commitGitCmd.Stdout = os.Stdout
-	commitGitCmd.Stderr = os.Stderr
+	if err != nil {
+		return errors.New("could not create the Git commit")
+	}
 
-	return commitGitCmd.Run()
+	commitObj, err := repo.CommitObject(createdCommit)
+	if err != nil {
+		return errors.New("could not get the Git commit object")
+	}
+
+	fmt.Println(commitObj)
+
+	return nil
 }
