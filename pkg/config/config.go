@@ -19,7 +19,7 @@ import (
 
 var (
 	configFile         *Config
-	configFileName     = ".commitsense.json"
+	configFileName     = "commitsense.config.json"
 	defaultVersion     = 1
 	defaultCommitTypes = []string{"feat", "fix", "docs", "style", "refactor", "perf", "test", "build", "ci", "chore", "revert"}
 	defaultSkipCITypes = []string{"docs"}
