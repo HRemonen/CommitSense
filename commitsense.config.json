@@ -1,0 +1,19 @@
+{
+  "commit_types": [
+    "feat",
+    "fix",
+    "docs",
+    "style",
+    "refactor",
+    "perf",
+    "test",
+    "build",
+    "ci",
+    "chore",
+    "revert"
+  ],
+  "skip_ci_types": [
+    "docs"
+  ],
+  "version": 1
+}

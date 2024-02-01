@@ -17,6 +17,7 @@ import (
 	"commitsense/pkg/commit"
 	"commitsense/pkg/validators"
 	"os"
+	"time"
 
 	colorprinter "commitsense/pkg/printer"
 	csprompt "commitsense/pkg/prompt"
@@ -34,11 +35,16 @@ var commitCmd = &cobra.Command{
 	Use:   "commit",
 	Short: "Create a commit with a standardized message",
 	Run: func(cmd *cobra.Command, args []string) {
-		_, err := commit.GetStagedFiles()
+		start := time.Now()
+
+		stagedFiles, err := commit.GetStagedFiles()
 		if err != nil {
 			colorprinter.ColorPrint("error", "Error: %v", err)
 			os.Exit(1)
 		}
+
+		elapsed := time.Since(start)
+		colorprinter.ColorPrint("error", "Getting staged files took: %v", elapsed)
 
 		commitType, err := commit.PromptCommitType(csprompt.Prompt{
 			Label: "Select a commit type",
@@ -106,7 +112,7 @@ var commitCmd = &cobra.Command{
 			BreakingChangeDescription: breakingChangeDescription,
 		}
 
-		if err := commit.CreateGitCommit(commitInfo); err != nil {
+		if err := commit.CreateGitCommit(commitInfo, stagedFiles); err != nil {
 			colorprinter.ColorPrint("error", "Error creating a commit: %v", err)
 			os.Exit(1)
 		}

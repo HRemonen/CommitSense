@@ -10,10 +10,9 @@ package commit
 import (
 	"commitsense/pkg/config"
 	"errors"
-
-	colorprinter "commitsense/pkg/printer"
-
-	"github.com/go-git/go-git/v5"
+	"os"
+	"os/exec"
+	"strings"
 )
 
 // Commit represents information needed for creating a Git commit.
@@ -28,33 +27,35 @@ type Commit struct {
 	BreakingChangeDescription string
 }
 
-// GetStagedFiles returns a list of staged files.
-func GetStagedFiles() ([]string, error) {
-	repo, err := git.PlainOpen(".")
-	if err != nil {
-		return nil, errors.New("could not open the Git repository")
-	}
-
-	worktree, err := repo.Worktree()
-	if err != nil {
-		return nil, errors.New("could not get the Git worktree")
-	}
-
-	status, err := worktree.Status()
-	if err != nil {
-		return nil, errors.New("could not get the Git status")
-	}
+// getStringsFromTerminalOutput takes the os/exec functions returned byte array
+// and transforms the bytes into an array of lines
+func getStagedFilesFromTerminalOutput(output []byte) []string {
+	lines := strings.Split(string(output), "\n")
 
 	var stagedFiles []string
-	for file, status := range status {
-		if status.Staging == git.Added || status.Staging == git.Modified || status.Staging == git.Deleted || status.Staging == git.Renamed || status.Staging == git.Copied {
-			stagedFiles = append(stagedFiles, file)
+	for _, line := range lines {
+		// Strip leading and trailing whitespace
+		line = strings.TrimSpace(line)
+
+		parts := strings.Fields(line)
+		if len(parts) == 2 {
+			stagedFiles = append(stagedFiles, parts[1])
 		}
 	}
 
-	if len(stagedFiles) == 0 {
+	return stagedFiles
+}
+
+// GetStagedFiles returns a list of staged files.
+func GetStagedFiles() ([]string, error) {
+	statusCmd := "git status --porcelain --untracked-files=all | grep '^[A|C|M|D|R]'"
+	cmd := exec.Command("bash", "-c", statusCmd)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
 		return nil, errors.New("could not get staged files, is the files added for staging?")
 	}
+
+	stagedFiles := getStagedFilesFromTerminalOutput(output)
 
 	return stagedFiles, nil
 }
@@ -103,31 +104,14 @@ func createCommitMessage(commit Commit) string {
 }
 
 // CreateGitCommit creates a Git commit from the commit struct.
-func CreateGitCommit(commit Commit) error {
-	repo, err := git.PlainOpen(".")
-	if err != nil {
-		return errors.New("could not open the Git repository")
-	}
-
-	worktree, err := repo.Worktree()
-	if err != nil {
-		return errors.New("could not get the Git worktree")
-	}
-
+func CreateGitCommit(commit Commit, stagedFiles []string) error {
 	commitMessage := createCommitMessage(commit)
 
-	createdCommit, err := worktree.Commit(commitMessage, &git.CommitOptions{})
-	if err != nil {
-		return errors.New("could not create the Git commit")
-	}
+	commitArgs := append([]string{"commit", "-m", commitMessage}, stagedFiles...)
 
-	commitObj, err := repo.CommitObject(createdCommit)
-	if err != nil {
-		return errors.New("could not get the Git commit object")
-	}
+	commitGitCmd := exec.Command("git", commitArgs...) //nolint:gosec // because I do not think the users can do anything bad here
+	commitGitCmd.Stdout = os.Stdout
+	commitGitCmd.Stderr = os.Stderr
 
-	colorprinter.ColorPrint("success", "Created new commit:")
-	colorprinter.ColorPrint("stdout", commitObj.String())
-
-	return nil
+	return commitGitCmd.Run()
 }
