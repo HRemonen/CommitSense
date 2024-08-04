@@ -32,6 +32,17 @@ This command guides you through creating a commit message according to the Conve
 
 ## Development
 
+### Building the application locally
+
+To build the application run the following command:
+```bash
+go build .
+```
+
+This will create a binary named *commitsense* to the root of the project.
+
+To run the built application run `./commitsense [command]` in the root of the project.
+
 ### golangci-lint
 
 [golangci-lint](https://golangci-lint.run/) is a fast and customizable Go linter. It provides a wide range of checks for various aspects of your Go code.
