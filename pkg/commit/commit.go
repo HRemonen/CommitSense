@@ -113,5 +113,11 @@ func CreateGitCommit(commit Commit, stagedFiles []string) error {
 	commitGitCmd.Stdout = os.Stdout
 	commitGitCmd.Stderr = os.Stderr
 
-	return commitGitCmd.Run()
+	commitGitCmd.Run()
+
+	updateIndexCmd := exec.Command("git", "update-index", "-g")
+	updateIndexCmd.Stdout = os.Stdout
+	updateIndexCmd.Stderr = os.Stderr
+
+	return updateIndexCmd.Run()
 }
