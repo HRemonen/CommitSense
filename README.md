@@ -24,11 +24,67 @@ You can always clone the repository, build the application and use the binary fo
 
 ### Creating Commits
 
+Creating commits for staged changes can be done using the following command:
+
 ```bash
 commitsense commit
 ```
 
 This command guides you through creating a commit message according to the Conventional Commits format.
+
+#### Coauthored Commits
+
+If you wish to add co-authors for the commits you can append the commit command with the flag `-a`:
+
+```bash
+commitsense commit -a
+```
+
+This will prompt you with the users that HAVE already made commits to the same git repository.
+
+#### Breaking Change Commits
+
+If your commits introduce breaking changes, you can append the commit command with the flag `-b`:
+
+```bash
+commitsense commit -b
+```
+
+This will add the breaking change notation to the final commit message on your behalf.
+
+### Configuration
+
+By default CommitSense will create a default configuration file with the following contents:
+
+```JSON
+{
+  "commit_types": [
+    "feat",
+    "fix",
+    "docs",
+    "style",
+    "refactor",
+    "perf",
+    "test",
+    "build",
+    "ci",
+    "chore",
+    "revert"
+  ],
+  "skip_ci_types": [
+    "docs"
+  ],
+  "version": 1
+}
+```
+
+The `commit_types` will be shown on the usage of `commit` command, and you can alter this array to your own liking. However keep in mind that if you want to follow Conventional commits spec, you must atleast have `fix` and `feat` types.
+
+The `skip_ci_types` will automatically add information to skip ci run on configured types. This can be empty.
+
+The configuration file is saved to the root of the project as an JSON file. This can be further modified to your own needs and it will persist the changes. On each run this configuraion file is checked.
+
+For collaboration on a project using CommitSense it is sensible to put the configuration file to version control.
 
 ## Development
 
@@ -53,7 +109,7 @@ To install golangci-lint, run the following command:
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 ```
 
-### Running golangci-lint
+#### Running golangci-lint
 
 To run golangci-lint on your project, navigate to your project's root directory and execute:
 
@@ -78,7 +134,7 @@ To install gofumpt, run:
 go install mvdan.cc/gofumpt@latest
 ```
 
-### Running gofumpt
+#### Running gofumpt
 
 To format and organize your import statements, run:
 
