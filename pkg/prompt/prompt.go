@@ -34,6 +34,10 @@ type Item struct {
 func CommitType(label string) (string, error) {
 	cfg, _ := config.Read()
 
+	if len(cfg.CommitTypes) == 0 {
+		return "", fmt.Errorf("no commit types found in the configuration file. Please add commit types to the configuration file")
+	}
+
 	promptType := promptui.Select{
 		Label: label,
 		Items: cfg.CommitTypes,
