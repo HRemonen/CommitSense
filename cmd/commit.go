@@ -35,16 +35,11 @@ var commitCmd = &cobra.Command{
 	Use:   "commit",
 	Short: "Create a commit with a standardized message",
 	Run: func(cmd *cobra.Command, args []string) {
-		start := time.Now()
-
 		stagedFiles, err := commit.GetStagedFiles()
 		if err != nil {
 			colorprinter.ColorPrint("error", "Error: %v", err)
 			os.Exit(1)
 		}
-
-		elapsed := time.Since(start)
-		colorprinter.ColorPrint("error", "Getting staged files took: %v", elapsed)
 
 		commitType, err := commit.PromptCommitType(csprompt.Prompt{
 			Label: "Select a commit type",
