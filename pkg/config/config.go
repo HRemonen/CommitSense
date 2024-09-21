@@ -8,8 +8,6 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package config
 
 import (
-	"encoding/json"
-	"fmt"
 	"os"
 
 	colorprinter "commitsense/pkg/printer"
@@ -40,7 +38,8 @@ func NewDefault() *Config {
 	}
 }
 
-
+// On CommitSense start up, check if the configuration file exists.
+// If it does not exist, create a default configuration file.
 func init() {
 	if !Exists() {
 		cfg := NewDefault()
@@ -101,31 +100,4 @@ func Write(config *Config) error {
 	viper.Set("skip_ci_types", config.SkipCITypes)
 
 	return viper.WriteConfig()
-}
-
-// ShowConfigSettings prints out the current configuration settings.
-func Show() error {
-	colorprinter.ColorPrint("success", "\nShowing current configuration settings")
-	config := configFile
-
-	colorprinter.ColorPrint("info", "Using configuration file: %v", configFileName)
-
-	colorprinter.ColorPrint("bold", "\nAllowed commit types:")
-	printConfig(config.CommitTypes)
-
-	colorprinter.ColorPrint("bold", "Skipping CI on types:")
-	printConfig(config.SkipCITypes)
-
-	return nil
-}
-
-func printConfig(data interface{}) {
-	jsonData, err := json.MarshalIndent(data, "", "  ")
-	if err != nil {
-		colorprinter.ColorPrint("error", "Error printing YAML: %v", err)
-
-		return
-	}
-
-	fmt.Println(string(jsonData))
 }

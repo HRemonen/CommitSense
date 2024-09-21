@@ -87,7 +87,7 @@ func createCommitMessage(commit *Commit) string {
 	var commitMessage string
 
 	commitMessage = commit.CommitType
-	config, _ := config.Read()
+	cfg, _ := config.Read()
 
 	if commit.CommitScope != "" {
 		commitMessage += "(" + commit.CommitScope + ")"
@@ -103,7 +103,7 @@ func createCommitMessage(commit *Commit) string {
 		commitMessage += "\n\n" + commit.CommitBody
 	}
 
-	for _, skipType := range config.SkipCITypes {
+	for _, skipType := range cfg.SkipCITypes {
 		if commit.CommitType == skipType {
 			commitMessage += "\n[skip ci]"
 			break

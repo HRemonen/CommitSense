@@ -10,7 +10,6 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package cmd
 
 import (
-	"commitsense/pkg/config"
 	"fmt"
 	"os"
 
@@ -20,9 +19,7 @@ import (
 )
 
 var (
-	showConfig bool
-	setConfig  bool
-	validArgs  = []string{"commit", "help"}
+	validArgs = []string{"commit", "help"}
 )
 
 var rootCmd = &cobra.Command{
@@ -38,10 +35,6 @@ files and create commit messages following the Conventional Commits specificatio
 	Args:               cobra.OnlyValidArgs,
 	ValidArgs:          validArgs,
 	RunE: func(cmd *cobra.Command, _ []string) error {
-		if showConfig {
-			return config.Show()
-		}
-
 		return cmd.Help()
 	},
 }
@@ -53,9 +46,6 @@ func SetVersion(version string, date string) {
 
 func init() {
 	cobra.OnInitialize()
-
-	rootCmd.Flags().BoolVarP(&showConfig, "show-config", "s", false, "Show current configuration settings")
-	rootCmd.Flags().BoolVarP(&setConfig, "set-config", "c", false, "Set new configuration settings")
 }
 
 // Execute command for the root command

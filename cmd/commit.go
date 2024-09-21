@@ -4,7 +4,6 @@ Package cmd provides commands for the commitsense application.
 This package contains the main commands and functionality for the commitsense application. It includes commands for interactive file selection and staging for commits. Additionally, it provides commands for creating standardized commit messages.
 
 Usage:
-  - Use the 'add' command to interactively select files to stage for committing.
   - Use the 'commit' command to create a commit with a standardized commit message.
 
 For more information, refer to the package-specific functions and commands.
