@@ -32,6 +32,18 @@ commitsense commit
 
 This command guides you through creating a commit message according to the Conventional Commits format.
 
+Starting from v1.0.0 you can also use "shorthand" commands to create commit messages with out the guidance:
+
+```bash
+commitsense feat "Add a new feature"
+
+# Also marking commits as breaking change is possible
+commitsense feat -b "Breaking changes"
+
+# And of course adding a commit scope 
+commitsense fix -s core "Fix a critical bug in production"
+```
+
 #### Coauthored Commits
 
 If you wish to add co-authors for the commits you can append the commit command with the flag `-a`:
