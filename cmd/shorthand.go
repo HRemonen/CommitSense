@@ -27,12 +27,12 @@ var (
 	breakingChange bool
 )
 
-func shorthandCmd(commitType string) *cobra.Command {
-	cmd := &cobra.Command{
+func newShorthandCommand(commitType string) *cobra.Command {
+	shorthandCmd := &cobra.Command{
 		Use:   commitType + " [message]",
 		Short: fmt.Sprintf("Create a git commit with type %s", commitType),
 		Args:  cobra.MinimumNArgs(1),
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(_ *cobra.Command, args []string) {
 			stagedFiles, err := commit.GetStagedFiles()
 			if err != nil {
 				colorprinter.ColorPrint("error", "Error: %v", err)
@@ -57,16 +57,16 @@ func shorthandCmd(commitType string) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&commitScope, "scope", "s", "", "Commit scope")
-	cmd.Flags().BoolVarP(&breakingChange, "is-breaking", "b", false, "Commit is introducing a breaking change")
+	shorthandCmd.Flags().StringVarP(&commitScope, "scope", "s", "", "Commit scope")
+	shorthandCmd.Flags().BoolVarP(&breakingChange, "is-breaking", "b", false, "Commit is introducing a breaking change")
 
-	return cmd
+	return shorthandCmd
 }
 
 func init() {
 	commitTypes := []string{"build", "ci", "chore", "docs", "feat", "fix", "perf", "refactor", "revert", "style", "test"}
 
 	for _, commitType := range commitTypes {
-		rootCmd.AddCommand(shorthandCmd(commitType))
+		rootCmd.AddCommand(newShorthandCommand(commitType))
 	}
 }
