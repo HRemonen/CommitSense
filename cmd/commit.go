@@ -13,11 +13,11 @@ Copyright © 2023 HENRI REMONEN <henri@remonen.fi>
 package cmd
 
 import (
+	"commitsense/internal/validators"
 	"commitsense/pkg/commit"
-	"commitsense/pkg/validators"
 	"os"
 
-	colorprinter "commitsense/pkg/printer"
+	colorprinter "commitsense/internal/printer"
 	csprompt "commitsense/pkg/prompt"
 
 	"github.com/spf13/cobra"

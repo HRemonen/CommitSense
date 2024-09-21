@@ -13,7 +13,7 @@ import (
 	"fmt"
 	"os"
 
-	colorprinter "commitsense/pkg/printer"
+	colorprinter "commitsense/internal/printer"
 
 	"github.com/spf13/cobra"
 )
