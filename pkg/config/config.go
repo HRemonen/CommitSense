@@ -30,6 +30,7 @@ type Config struct {
 	SkipCITypes []string `json:"skip_ci_types"`
 }
 
+// NewDefault creates a new default configuration object.
 func NewDefault() *Config {
 	return &Config{
 		Version:     defaultVersion,
@@ -41,7 +42,7 @@ func NewDefault() *Config {
 // On CommitSense start up, check if the configuration file exists.
 // If it does not exist, create a default configuration file.
 func init() {
-	if !Exists() {
+	if !exists() {
 		cfg := NewDefault()
 
 		err := Write(cfg)
@@ -63,14 +64,14 @@ func init() {
 }
 
 // Exists checks if the configuration file exists in the project's root directory.
-func Exists() bool {
+func exists() bool {
 	if fi, err := os.Stat(configFileName); err != nil || fi.IsDir() {
 		return false
 	}
 	return true
 }
 
-// ReadConfigFile reads the configuration file from the project's root directory.
+// Read reads the configuration file from the project's root directory.
 func Read() (*Config, error) {
 	viper.SetConfigFile(configFileName)
 
@@ -91,7 +92,7 @@ func Read() (*Config, error) {
 	}, nil
 }
 
-// WriteConfigFile writes the configuration file to the project's root directory.
+// Write writes the configuration file to the project's root directory.
 func Write(config *Config) error {
 	viper.SetConfigFile(configFileName)
 

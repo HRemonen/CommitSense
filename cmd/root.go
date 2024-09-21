@@ -18,9 +18,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	validArgs = []string{"commit", "help"}
-)
+var validArgs = []string{"commit", "help"}
 
 var rootCmd = &cobra.Command{
 	Use:   "commitsense",
