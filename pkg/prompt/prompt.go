@@ -20,7 +20,6 @@ import (
 	"os"
 	"strings"
 
-
 	goprompt "github.com/c-bata/go-prompt"
 	"github.com/manifoldco/promptui"
 )
@@ -31,8 +30,8 @@ type Item struct {
 	IsSelected bool
 }
 
-// PromptCommitType prompts the user to select a commit type.
-func PromptCommitType(label string) (string, error) {
+// CommitType prompts the user to select a commit type.
+func CommitType(label string) (string, error) {
 	cfg, _ := config.ReadConfigFile()
 
 	promptType := promptui.Select{
@@ -45,8 +44,8 @@ func PromptCommitType(label string) (string, error) {
 	return typeResult, err
 }
 
-// PromptForString prompts the user to enter a string.
-func PromptForString(label string, validator promptui.ValidateFunc) (string, error) {
+// String prompts the user to enter a string.
+func String(label string, validator promptui.ValidateFunc) (string, error) {
 	promptString := promptui.Prompt{
 		Label:    label,
 		Validate: validator,
@@ -54,12 +53,12 @@ func PromptForString(label string, validator promptui.ValidateFunc) (string, err
 	return promptString.Run()
 }
 
-// PromptForMultilineString prompts the user for a multiline string input based on the provided prompt configuration.
+// MultilineString prompts the user for a multiline string input based on the provided prompt configuration.
 // Users can enter multiple lines of text until they press Enter twice to finish.
-func PromptForMultilineString(label string) (string, error) {
+func MultilineString(label string) (string, error) {
 	var lines []string
 	for {
-		line, err := PromptForString(label, nil)
+		line, err := String(label, nil)
 		if err != nil || line == "" {
 			break
 		}
@@ -70,12 +69,12 @@ func PromptForMultilineString(label string) (string, error) {
 	return strings.Join(lines, "\n"), nil
 }
 
-// PromptForCoAuthors displays a prompt to enter co-author names for a Git commit.
+// CoAuthors displays a prompt to enter co-author names for a Git commit.
 //
 // This function provides real-time auto-completion suggestions based on the suggestedCoAuthors
 // list. Users can choose from the suggestions or enter custom co-authors. It returns a slice
 // of selected co-author names.
-func PromptForCoAuthors(label string) ([]string, error) {
+func CoAuthors(label string) ([]string, error) {
 	suggestedCoAuthors, err := author.GetSuggestedCoAuthors()
 	if err != nil {
 		fmt.Println("Error getting the suggested co-authors:", err)

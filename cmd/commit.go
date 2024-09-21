@@ -33,26 +33,26 @@ var (
 var commitCmd = &cobra.Command{
 	Use:   "commit",
 	Short: "Create a commit with a standardized message",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		stagedFiles, err := commit.GetStagedFiles()
 		if err != nil {
 			colorprinter.ColorPrint("error", "Error: %v", err)
 			os.Exit(1)
 		}
 
-		commitType, err := csprompt.PromptCommitType("Select a commit type")
+		commitType, err := csprompt.CommitType("Select a commit type")
 		if err != nil {
 			colorprinter.ColorPrint("error", "Error prompting for the commit type: %v", err)
 			os.Exit(1)
 		}
 
-		commitScope, err := csprompt.PromptForString("Enter a commit scope (optional)", nil)
+		commitScope, err := csprompt.String("Enter a commit scope (optional)", nil)
 		if err != nil {
 			colorprinter.ColorPrint("error", "Error prompting for the commit scope: %v", err)
 			os.Exit(1)
 		}
 
-		commitDescription, err := csprompt.PromptForString(
+		commitDescription, err := csprompt.String(
 			"Enter a brief commit description",
 			validators.ValidateStringNotEmpty,
 		)
@@ -61,7 +61,7 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		commitBody, err := csprompt.PromptForMultilineString(
+		commitBody, err := csprompt.MultilineString(
 			"Enter a detailed commit body (press Enter twice to finish)",
 		)
 		if err != nil {
@@ -71,7 +71,7 @@ var commitCmd = &cobra.Command{
 
 		var coAuthors []string
 		if isCoAuthored {
-			coAuthors, err = csprompt.PromptForCoAuthors(
+			coAuthors, err = csprompt.CoAuthors(
 				"Enter Co-Author information ",
 			)
 			if err != nil {
@@ -82,7 +82,7 @@ var commitCmd = &cobra.Command{
 
 		var breakingChangeDescription string
 		if isBreakingChange {
-			breakingChangeDescription, err = csprompt.PromptForString(
+			breakingChangeDescription, err = csprompt.String(
 				"Enter a description of the breaking change",
 				nil,
 			)

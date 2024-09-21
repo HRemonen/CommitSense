@@ -37,7 +37,7 @@ files and create commit messages following the Conventional Commits specificatio
 	DisableSuggestions: false,
 	Args:               cobra.OnlyValidArgs,
 	ValidArgs:          validArgs,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(cmd *cobra.Command, _ []string) error {
 		if showConfig {
 			return config.ShowConfigSettings()
 		}
