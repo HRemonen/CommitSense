@@ -25,6 +25,42 @@ type Commit struct {
 	CoAuthors                 []string
 	IsBreakingChange          bool
 	BreakingChangeDescription string
+	StagedFiles               []string
+}
+
+// CreateGitCommit creates a Git commit from the commit struct.
+func (c *Commit) CreateGitCommit() error {
+	commitMessage := createCommitMessage(c)
+
+	commitArgs := append([]string{"commit", "-m", commitMessage}, c.StagedFiles...)
+
+	commitGitCmd := exec.Command("git", commitArgs...) //nolint:gosec // because I do not think the users can do anything bad here
+	commitGitCmd.Stdout = os.Stdout
+	commitGitCmd.Stderr = os.Stderr
+
+	if err := commitGitCmd.Run(); err != nil {
+		return err
+	}
+
+	updateIndexCmd := exec.Command("git", "update-index", "-g")
+	updateIndexCmd.Stdout = os.Stdout
+	updateIndexCmd.Stderr = os.Stderr
+
+	return updateIndexCmd.Run()
+}
+
+// GetStagedFiles returns a list of staged files.
+func GetStagedFiles() ([]string, error) {
+	statusCmd := "git status --porcelain --untracked-files=all | grep '^[A|C|M|D|R]'"
+	cmd := exec.Command("bash", "-c", statusCmd)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return nil, errors.New("could not get staged files, is the files added for staging?")
+	}
+
+	stagedFiles := getStagedFilesFromTerminalOutput(output)
+
+	return stagedFiles, nil
 }
 
 // getStringsFromTerminalOutput takes the os/exec functions returned byte array
@@ -46,22 +82,8 @@ func getStagedFilesFromTerminalOutput(output []byte) []string {
 	return stagedFiles
 }
 
-// GetStagedFiles returns a list of staged files.
-func GetStagedFiles() ([]string, error) {
-	statusCmd := "git status --porcelain --untracked-files=all | grep '^[A|C|M|D|R]'"
-	cmd := exec.Command("bash", "-c", statusCmd)
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		return nil, errors.New("could not get staged files, is the files added for staging?")
-	}
-
-	stagedFiles := getStagedFilesFromTerminalOutput(output)
-
-	return stagedFiles, nil
-}
-
 // CreateCommitMessage creates a commit message in the Conventional Commits format.
-func createCommitMessage(commit Commit) string {
+func createCommitMessage(commit *Commit) string {
 	var commitMessage string
 
 	commitMessage = commit.CommitType
@@ -101,25 +123,4 @@ func createCommitMessage(commit Commit) string {
 	}
 
 	return commitMessage
-}
-
-// CreateGitCommit creates a Git commit from the commit struct.
-func CreateGitCommit(commit Commit, stagedFiles []string) error {
-	commitMessage := createCommitMessage(commit)
-
-	commitArgs := append([]string{"commit", "-m", commitMessage}, stagedFiles...)
-
-	commitGitCmd := exec.Command("git", commitArgs...) //nolint:gosec // because I do not think the users can do anything bad here
-	commitGitCmd.Stdout = os.Stdout
-	commitGitCmd.Stderr = os.Stderr
-
-	if err := commitGitCmd.Run(); err != nil {
-		return err
-	}
-
-	updateIndexCmd := exec.Command("git", "update-index", "-g")
-	updateIndexCmd.Stdout = os.Stdout
-	updateIndexCmd.Stderr = os.Stderr
-
-	return updateIndexCmd.Run()
 }

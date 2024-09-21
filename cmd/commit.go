@@ -17,7 +17,6 @@ import (
 	"commitsense/pkg/commit"
 	"commitsense/pkg/validators"
 	"os"
-	"time"
 
 	colorprinter "commitsense/pkg/printer"
 	csprompt "commitsense/pkg/prompt"
@@ -96,7 +95,7 @@ var commitCmd = &cobra.Command{
 			}
 		}
 
-		commitInfo := commit.Commit{
+		c := commit.Commit{
 			CommitType:                commitType,
 			CommitScope:               commitScope,
 			CommitDescription:         commitDescription,
@@ -105,9 +104,10 @@ var commitCmd = &cobra.Command{
 			CoAuthors:                 coAuthors,
 			IsBreakingChange:          isBreakingChange,
 			BreakingChangeDescription: breakingChangeDescription,
+			StagedFiles:               stagedFiles,
 		}
 
-		if err := commit.CreateGitCommit(commitInfo, stagedFiles); err != nil {
+		if err := c.CreateGitCommit(); err != nil {
 			colorprinter.ColorPrint("error", "Error creating a commit: %v", err)
 			os.Exit(1)
 		}
