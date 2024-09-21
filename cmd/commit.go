@@ -40,34 +40,30 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		commitType, err := commit.PromptCommitType(csprompt.Prompt{
-			Label: "Select a commit type",
-		})
+		commitType, err := csprompt.PromptCommitType("Select a commit type")
 		if err != nil {
 			colorprinter.ColorPrint("error", "Error prompting for the commit type: %v", err)
 			os.Exit(1)
 		}
 
-		commitScope, err := commit.PromptForString(csprompt.Prompt{
-			Label: "Enter a commit scope (optional)",
-		})
+		commitScope, err := csprompt.PromptForString("Enter a commit scope (optional)", nil)
 		if err != nil {
 			colorprinter.ColorPrint("error", "Error prompting for the commit scope: %v", err)
 			os.Exit(1)
 		}
 
-		commitDescription, err := commit.PromptForString(csprompt.Prompt{
-			Label:    "Enter a brief commit description",
-			Validate: validators.ValidateStringNotEmpty,
-		})
+		commitDescription, err := csprompt.PromptForString(
+			"Enter a brief commit description",
+			validators.ValidateStringNotEmpty,
+		)
 		if err != nil {
 			colorprinter.ColorPrint("error", "Error prompting for the commit description: %v", err)
 			os.Exit(1)
 		}
 
-		commitBody, err := commit.PromptForMultilineString(csprompt.Prompt{
-			Label: "Enter a detailed commit body (press Enter twice to finish)",
-		})
+		commitBody, err := csprompt.PromptForMultilineString(
+			"Enter a detailed commit body (press Enter twice to finish)",
+		)
 		if err != nil {
 			colorprinter.ColorPrint("error", "Error prompting for the commit body: %v", err)
 			os.Exit(1)
@@ -75,9 +71,9 @@ var commitCmd = &cobra.Command{
 
 		var coAuthors []string
 		if isCoAuthored {
-			coAuthors, err = commit.PromptForCoAuthors(csprompt.Prompt{
-				Label: "Enter Co-Author information ",
-			})
+			coAuthors, err = csprompt.PromptForCoAuthors(
+				"Enter Co-Author information ",
+			)
 			if err != nil {
 				colorprinter.ColorPrint("error", "Error prompting for the co-authors: %v", err)
 				os.Exit(1)
@@ -86,9 +82,10 @@ var commitCmd = &cobra.Command{
 
 		var breakingChangeDescription string
 		if isBreakingChange {
-			breakingChangeDescription, err = commit.PromptForString(csprompt.Prompt{
-				Label: "Enter a description of the breaking change",
-			})
+			breakingChangeDescription, err = csprompt.PromptForString(
+				"Enter a description of the breaking change",
+				nil,
+			)
 			if err != nil {
 				colorprinter.ColorPrint("error", "Error prompting for the breaking change description: %v", err)
 				os.Exit(1)
