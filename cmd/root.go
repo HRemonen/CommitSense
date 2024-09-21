@@ -39,7 +39,7 @@ files and create commit messages following the Conventional Commits specificatio
 	ValidArgs:          validArgs,
 	RunE: func(cmd *cobra.Command, _ []string) error {
 		if showConfig {
-			return config.ShowConfigSettings()
+			return config.Show()
 		}
 
 		return cmd.Help()

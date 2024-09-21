@@ -87,7 +87,7 @@ func createCommitMessage(commit *Commit) string {
 	var commitMessage string
 
 	commitMessage = commit.CommitType
-	config, _ := config.ReadConfigFile()
+	config, _ := config.Read()
 
 	if commit.CommitScope != "" {
 		commitMessage += "(" + commit.CommitScope + ")"

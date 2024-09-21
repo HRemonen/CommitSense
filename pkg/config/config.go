@@ -32,18 +32,30 @@ type Config struct {
 	SkipCITypes []string `json:"skip_ci_types"`
 }
 
+func NewDefault() *Config {
+	return &Config{
+		Version:     defaultVersion,
+		CommitTypes: defaultCommitTypes,
+		SkipCITypes: defaultSkipCITypes,
+	}
+}
+
+
 func init() {
 	if !Exists() {
-		err := CreateDefaultConfig()
+		cfg := NewDefault()
+
+		err := Write(cfg)
 		if err != nil {
 			colorprinter.ColorPrint("error", "Error creating default config: %v", err)
 			os.Exit(1)
 		}
+
 		colorprinter.ColorPrint("info", "\nCould not find an existing configuration file")
 		colorprinter.ColorPrint("success", "Created default configuration file at %v", configFileName)
 	}
 
-	config, err := ReadConfigFile()
+	config, err := Read()
 	if err != nil {
 		os.Exit(1)
 	}
@@ -60,7 +72,7 @@ func Exists() bool {
 }
 
 // ReadConfigFile reads the configuration file from the project's root directory.
-func ReadConfigFile() (*Config, error) {
+func Read() (*Config, error) {
 	viper.SetConfigFile(configFileName)
 
 	if err := viper.ReadInConfig(); err != nil {
@@ -81,7 +93,7 @@ func ReadConfigFile() (*Config, error) {
 }
 
 // WriteConfigFile writes the configuration file to the project's root directory.
-func WriteConfigFile(config *Config) error {
+func Write(config *Config) error {
 	viper.SetConfigFile(configFileName)
 
 	viper.Set("version", config.Version)
@@ -91,17 +103,8 @@ func WriteConfigFile(config *Config) error {
 	return viper.WriteConfig()
 }
 
-// CreateDefaultConfig writes a default configuration file to the project's root directory.
-func CreateDefaultConfig() error {
-	return WriteConfigFile(&Config{
-		Version:     defaultVersion,
-		CommitTypes: defaultCommitTypes,
-		SkipCITypes: defaultSkipCITypes,
-	})
-}
-
 // ShowConfigSettings prints out the current configuration settings.
-func ShowConfigSettings() error {
+func Show() error {
 	colorprinter.ColorPrint("success", "\nShowing current configuration settings")
 	config := configFile
 

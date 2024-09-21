@@ -32,7 +32,7 @@ type Item struct {
 
 // CommitType prompts the user to select a commit type.
 func CommitType(label string) (string, error) {
-	cfg, _ := config.ReadConfigFile()
+	cfg, _ := config.Read()
 
 	promptType := promptui.Select{
 		Label: label,
